@@ -1,24 +1,63 @@
 package ua.dp.dryzhyruk.impl.person.info.loader;
 
+import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
+import org.supercsv.cellprocessor.constraint.NotNull;
+import org.supercsv.cellprocessor.ift.CellProcessor;
+import org.supercsv.io.CsvBeanReader;
+import org.supercsv.io.ICsvBeanReader;
+import org.supercsv.prefs.CsvPreference;
 import ua.dp.dryzhyruk.person.info.loader.PersonInfoLoader;
 import ua.dp.dryzhyruk.person.info.loader.Recipient;
 
-import java.time.LocalDate;
+import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class PersonInfoLoaderImpl implements PersonInfoLoader {
 
-    public List<Recipient> loadPersonInformation() {
+    @Autowired //TODO
+    private ResourceLoader resourceLoader;
 
-        Recipient person1 = Recipient.builder()
-                .dateOfBirth(LocalDate.of(1986,6,25))
-                .recipientFullName("Ivan Dryzhyruk")
-                .recipientEmail("ivan.drizhiruk@gmail.com")
-                .managerEmail("ivan.drizhiruk-manager@gmail.com")
+    @SneakyThrows
+    public List<Recipient> loadPersonInformation() {
+        List<Recipient> recipients = new ArrayList<>();
+
+        try (ICsvBeanReader csvBeanReader = new CsvBeanReader(
+                new FileReader(
+                        resourceLoader.getResource("persons.csv").getFile()
+                ),
+                CsvPreference.STANDARD_PREFERENCE)) {
+            final String[] header = csvBeanReader.getHeader(true);
+            final CellProcessor[] processors = getProcessors();
+
+            CsvRecipient employee = null;
+            while ((employee = csvBeanReader.read(CsvRecipient.class, header, processors)) != null) {
+                recipients.add(toRecipient(employee));
+            }
+        }
+
+        return recipients;
+    }
+
+    private Recipient toRecipient(CsvRecipient csvRecipient) {
+        return Recipient.builder()
+                .dateOfBirth(csvRecipient.getBirthday())
+                .recipientFullName(csvRecipient.getFullName())
+                .recipientEmail(csvRecipient.getEmail())
+                .managerEmail(csvRecipient.getManagerEmail())
                 .build();
-        
-        return List.of(person1);
+    }
+
+    private static CellProcessor[] getProcessors() {
+        return new CellProcessor[]{
+                new ParseLocalDate(),
+                new NotNull(),
+                new NotNull(),
+                new NotNull()
+        };
     }
 }
