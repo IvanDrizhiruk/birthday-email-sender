@@ -1,8 +1,8 @@
 package ua.dp.dryzhyruk.email.generator;
 
-import ua.dp.dryzhyruk.recipient.group.RecipientGroup;
+import ua.dp.dryzhyruk.recipient.group.EmailData;
 
 public interface EmailContentGenerator {
 
-    EmailContent generateEmailContent(RecipientGroup recipientGroup);
+    EmailContent generateEmailContent(EmailData emailData);
 }

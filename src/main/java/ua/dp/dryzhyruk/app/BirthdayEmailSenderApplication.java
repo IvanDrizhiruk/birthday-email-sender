@@ -2,10 +2,12 @@ package ua.dp.dryzhyruk.app;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import ua.dp.dryzhyruk.core.SendProcess;
 
 import javax.annotation.PostConstruct;
+import java.time.Clock;
 
 @SpringBootApplication
 //@PropertySource(value = {"application.properties"})
@@ -28,4 +30,8 @@ public class BirthdayEmailSenderApplication {
         sendProcess.execute();
     }
 
+    @Bean
+    public Clock newClock() {
+        return Clock.systemDefaultZone();
+    }
 }

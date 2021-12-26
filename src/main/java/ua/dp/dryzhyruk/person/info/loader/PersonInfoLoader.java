@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface PersonInfoLoader {
 
-    List<PersonInformation> loadPersonInformation();
+    List<Recipient> loadPersonInformation();
 }

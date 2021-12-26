@@ -6,9 +6,9 @@ import ua.dp.dryzhyruk.email.generator.EmailContent;
 import ua.dp.dryzhyruk.email.generator.EmailContentGenerator;
 import ua.dp.dryzhyruk.email.sender.EmailSender;
 import ua.dp.dryzhyruk.person.info.loader.PersonInfoLoader;
-import ua.dp.dryzhyruk.person.info.loader.PersonInformation;
-import ua.dp.dryzhyruk.recipient.group.RecipientGroup;
-import ua.dp.dryzhyruk.recipient.group.RecipientGroupCalculator;
+import ua.dp.dryzhyruk.person.info.loader.Recipient;
+import ua.dp.dryzhyruk.recipient.group.EmailData;
+import ua.dp.dryzhyruk.recipient.group.EmailDataCalculator;
 
 import java.util.List;
 
@@ -16,29 +16,29 @@ import java.util.List;
 public class SendProcess {
 
     private final PersonInfoLoader personInfoLoader;
-    private final RecipientGroupCalculator recipientGroupCalculator;
+    private final EmailDataCalculator emailRecipientCalculator;
     private final EmailContentGenerator emailContentGenerator;
     private final EmailSender emailSender;
 
     @Autowired
     public SendProcess(
             PersonInfoLoader personInfoLoader,
-            RecipientGroupCalculator recipientGroupCalculator,
+            EmailDataCalculator emailRecipientCalculator,
             EmailContentGenerator emailContentGenerator,
             EmailSender emailSender) {
         this.personInfoLoader = personInfoLoader;
-        this.recipientGroupCalculator = recipientGroupCalculator;
+        this.emailRecipientCalculator = emailRecipientCalculator;
         this.emailContentGenerator = emailContentGenerator;
         this.emailSender = emailSender;
     }
 
     public void execute() {
-        List<PersonInformation> personsInformation = personInfoLoader.loadPersonInformation();
-        List<RecipientGroup> recipientGroups = recipientGroupCalculator.prepareRecipientGroups(personsInformation);
+        List<Recipient> recipient = personInfoLoader.loadPersonInformation();
+        List<EmailData> emailsData = emailRecipientCalculator.prepareEmailsData(recipient);
 
-        recipientGroups.forEach(recipientGroup -> {
-            EmailContent generatedEmail = emailContentGenerator.generateEmailContent(recipientGroup);
-            emailSender.sendEmail(recipientGroup, generatedEmail);
+        emailsData.forEach(emailData -> {
+            EmailContent generatedEmail = emailContentGenerator.generateEmailContent(emailData);
+            emailSender.sendEmail(emailData, generatedEmail);
         });
     }
 }
