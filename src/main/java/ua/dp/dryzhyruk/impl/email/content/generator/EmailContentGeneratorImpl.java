@@ -5,6 +5,7 @@ import freemarker.template.Template;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import ua.dp.dryzhyruk.core.email.content.generator.EmailContent;
@@ -17,39 +18,40 @@ import java.util.Map;
 @Service
 public class EmailContentGeneratorImpl implements EmailContentGenerator {
 
-    private final Configuration fmConfiguration;
+    private final Configuration freemarkerConfiguration;
 
     @Autowired
-    public EmailContentGeneratorImpl(Configuration fmConfiguration) {
-        this.fmConfiguration = fmConfiguration;
+    public EmailContentGeneratorImpl(
+            @Qualifier("freemarkerConfiguration")Configuration freemarkerConfiguration) {
+        this.freemarkerConfiguration = freemarkerConfiguration;
     }
 
     @Override
     public EmailContent generateEmailContent(EmailData emailData) {
+        return EmailContent.builder()
+                .htmlContent(generateHtmlContent(emailData))
+                .build();
+    }
 
-        String html;
+    private String generateHtmlContent(EmailData emailData) {
         switch (emailData.getType()) {
             case BIRTHDAY:
-                html = generateHtmlContentForBirthday(emailData);
-                break;
+                return generateHtmlContentForBirthday(emailData);
+            case WEEKLY_FOR_MANAGER: //TODO
             default:
                 throw new UnsupportedOperationException("Unsupported email type: " + emailData.getType());
         }
-
-        return EmailContent.builder()
-                .htmlContent(html)
-                .build();
     }
 
     private String generateHtmlContentForBirthday(EmailData emailData) {
         Map<String, Object> model = Map.of(
                 "recipientFullName", emailData.getTo().getRecipientFullName());
-        return geContentFromTemplate("birthday.html", model);
+        return generateFromTemplate("birthday.html", model);
     }
 
     @SneakyThrows
-    public String geContentFromTemplate(String templateName, Map<String, Object> model) {
-        Template template = fmConfiguration.getTemplate(templateName);
+    private String generateFromTemplate(String templateName, Map<String, Object> model) {
+        Template template = freemarkerConfiguration.getTemplate(templateName);
 
         return FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
     }
