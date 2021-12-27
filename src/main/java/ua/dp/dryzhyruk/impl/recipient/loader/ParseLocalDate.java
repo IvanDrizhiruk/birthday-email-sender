@@ -1,4 +1,4 @@
-package ua.dp.dryzhyruk.impl.person.info.loader;
+package ua.dp.dryzhyruk.impl.recipient.loader;
 
 import org.supercsv.cellprocessor.CellProcessorAdaptor;
 import org.supercsv.cellprocessor.ift.CellProcessor;

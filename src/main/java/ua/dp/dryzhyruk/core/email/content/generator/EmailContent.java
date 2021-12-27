@@ -1,4 +1,4 @@
-package ua.dp.dryzhyruk.email.generator;
+package ua.dp.dryzhyruk.core.email.content.generator;
 
 import lombok.Builder;
 import lombok.Value;

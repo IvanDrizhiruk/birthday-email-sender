@@ -1,8 +1,8 @@
-package ua.dp.dryzhyruk.recipient.group;
+package ua.dp.dryzhyruk.core.email.data;
 
 import lombok.Builder;
 import lombok.Value;
-import ua.dp.dryzhyruk.person.info.loader.Recipient;
+import ua.dp.dryzhyruk.core.recipient.loader.Recipient;
 
 @Value
 @Builder

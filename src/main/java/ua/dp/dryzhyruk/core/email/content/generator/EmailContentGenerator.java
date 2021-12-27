@@ -1,6 +1,6 @@
-package ua.dp.dryzhyruk.email.generator;
+package ua.dp.dryzhyruk.core.email.content.generator;
 
-import ua.dp.dryzhyruk.recipient.group.EmailData;
+import ua.dp.dryzhyruk.core.email.data.EmailData;
 
 public interface EmailContentGenerator {
 

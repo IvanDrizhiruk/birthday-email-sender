@@ -1,4 +1,4 @@
-package ua.dp.dryzhyruk.recipient.group;
+package ua.dp.dryzhyruk.core.email.data;
 
 public enum EmailType {
     BIRTHDAY,

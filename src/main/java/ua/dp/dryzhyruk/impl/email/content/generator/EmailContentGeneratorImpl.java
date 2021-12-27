@@ -1,4 +1,4 @@
-package ua.dp.dryzhyruk.impl.email.generator;
+package ua.dp.dryzhyruk.impl.email.content.generator;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -7,9 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
-import ua.dp.dryzhyruk.email.generator.EmailContent;
-import ua.dp.dryzhyruk.email.generator.EmailContentGenerator;
-import ua.dp.dryzhyruk.recipient.group.EmailData;
+import ua.dp.dryzhyruk.core.email.content.generator.EmailContent;
+import ua.dp.dryzhyruk.core.email.content.generator.EmailContentGenerator;
+import ua.dp.dryzhyruk.core.email.data.EmailData;
 
 import java.util.Map;
 

@@ -1,4 +1,4 @@
-package ua.dp.dryzhyruk.impl.person.info.loader;
+package ua.dp.dryzhyruk.impl.recipient.loader;
 
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +9,8 @@ import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.io.CsvBeanReader;
 import org.supercsv.io.ICsvBeanReader;
 import org.supercsv.prefs.CsvPreference;
-import ua.dp.dryzhyruk.person.info.loader.PersonInfoLoader;
-import ua.dp.dryzhyruk.person.info.loader.Recipient;
+import ua.dp.dryzhyruk.core.recipient.loader.PersonInfoLoader;
+import ua.dp.dryzhyruk.core.recipient.loader.Recipient;
 
 import java.io.FileReader;
 import java.util.ArrayList;

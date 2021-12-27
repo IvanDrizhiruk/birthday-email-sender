@@ -1,7 +1,7 @@
-package ua.dp.dryzhyruk.recipient.group;
+package ua.dp.dryzhyruk.core.email.data;
 
 import org.springframework.stereotype.Service;
-import ua.dp.dryzhyruk.person.info.loader.Recipient;
+import ua.dp.dryzhyruk.core.recipient.loader.Recipient;
 
 import java.time.Clock;
 import java.time.DayOfWeek;

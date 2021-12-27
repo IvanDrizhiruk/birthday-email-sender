@@ -1,4 +1,4 @@
-package ua.dp.dryzhyruk.impl.person.info.loader;
+package ua.dp.dryzhyruk.impl.recipient.loader;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package ua.dp.dryzhyruk.email.sender;
+package ua.dp.dryzhyruk.core.email.sender;
 
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.TemplateLoader;

@@ -1,9 +1,9 @@
-package ua.dp.dryzhyruk.recipient.group;
+package ua.dp.dryzhyruk.core.email.data;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ua.dp.dryzhyruk.ClockUtils;
-import ua.dp.dryzhyruk.person.info.loader.Recipient;
+import ua.dp.dryzhyruk.core.recipient.loader.Recipient;
 
 import java.time.Clock;
 import java.time.LocalDate;

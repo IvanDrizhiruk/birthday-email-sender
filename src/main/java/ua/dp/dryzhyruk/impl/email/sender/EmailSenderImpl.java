@@ -3,9 +3,9 @@ package ua.dp.dryzhyruk.impl.email.sender;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import ua.dp.dryzhyruk.email.generator.EmailContent;
-import ua.dp.dryzhyruk.email.sender.EmailSender;
-import ua.dp.dryzhyruk.recipient.group.EmailData;
+import ua.dp.dryzhyruk.core.email.content.generator.EmailContent;
+import ua.dp.dryzhyruk.core.email.sender.EmailSender;
+import ua.dp.dryzhyruk.core.email.data.EmailData;
 
 import javax.mail.MessagingException;
 import javax.mail.Session;
