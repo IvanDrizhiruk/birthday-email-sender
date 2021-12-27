@@ -2,6 +2,8 @@ package ua.dp.dryzhyruk.impl.recipient.loader;
 
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.supercsv.cellprocessor.constraint.NotNull;
@@ -9,50 +11,63 @@ import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.io.CsvBeanReader;
 import org.supercsv.io.ICsvBeanReader;
 import org.supercsv.prefs.CsvPreference;
+import ua.dp.dryzhyruk.core.recipient.loader.LoadRecipientsException;
 import ua.dp.dryzhyruk.core.recipient.loader.PersonInfoLoader;
 import ua.dp.dryzhyruk.core.recipient.loader.Recipient;
 
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class PersonInfoLoaderImpl implements PersonInfoLoader {
 
-    @Autowired //TODO
-    private ResourceLoader resourceLoader;
+    private final ResourceLoader resourceLoader;
+    private final String recipientsFilePath;
 
-    @SneakyThrows
-    public List<Recipient> loadPersonInformation() {
-        List<Recipient> recipients = new ArrayList<>();
-
-        try (ICsvBeanReader csvBeanReader = new CsvBeanReader(
-                new FileReader(
-                        resourceLoader.getResource("persons.csv").getFile()
-                ),
-                CsvPreference.STANDARD_PREFERENCE)) {
-            final String[] header = csvBeanReader.getHeader(true);
-            final CellProcessor[] processors = getProcessors();
-
-            CsvRecipient employee = null;
-            while ((employee = csvBeanReader.read(CsvRecipient.class, header, processors)) != null) {
-                recipients.add(toRecipient(employee));
-            }
-        }
-
-        return recipients;
+    @Autowired
+    public PersonInfoLoaderImpl(
+            ResourceLoader resourceLoader,
+            @Value("${recipients.file.path}") String recipientsFilePath) {
+        this.resourceLoader = resourceLoader;
+        this.recipientsFilePath = recipientsFilePath;
     }
 
-    private Recipient toRecipient(CsvRecipient csvRecipient) {
+    @SneakyThrows
+    public List<Recipient> loadPersonInformation() throws LoadRecipientsException {
+        try (ICsvBeanReader csvBeanReader = prepareCsvBeanReader()) {
+            final String[] header = csvBeanReader.getHeader(true);
+            final CellProcessor[] processors = prepareProcessors();
+
+            List<Recipient> recipients = new ArrayList<>();
+
+            RecipientCsvEntity recipient;
+            while ((recipient = csvBeanReader.read(RecipientCsvEntity.class, header, processors)) != null) {
+                recipients.add(toRecipient(recipient));
+            }
+
+            return recipients;
+        } catch (Exception e) {
+            throw new LoadRecipientsException("Unable parse file " + recipientsFilePath, e);
+        }
+    }
+
+    private CsvBeanReader prepareCsvBeanReader() throws IOException {
+        Resource resource = resourceLoader.getResource(recipientsFilePath);
+        return new CsvBeanReader(new FileReader(resource.getFile()), CsvPreference.STANDARD_PREFERENCE);
+    }
+
+    private Recipient toRecipient(RecipientCsvEntity csvRecipientEntity) {
         return Recipient.builder()
-                .dateOfBirth(csvRecipient.getBirthday())
-                .recipientFullName(csvRecipient.getFullName())
-                .recipientEmail(csvRecipient.getEmail())
-                .managerEmail(csvRecipient.getManagerEmail())
+                .dateOfBirth(csvRecipientEntity.getBirthday())
+                .recipientFullName(csvRecipientEntity.getFullName())
+                .recipientEmail(csvRecipientEntity.getEmail())
+                .managerEmail(csvRecipientEntity.getManagerEmail())
                 .build();
     }
 
-    private static CellProcessor[] getProcessors() {
+    private static CellProcessor[] prepareProcessors() {
         return new CellProcessor[]{
                 new ParseLocalDate(),
                 new NotNull(),

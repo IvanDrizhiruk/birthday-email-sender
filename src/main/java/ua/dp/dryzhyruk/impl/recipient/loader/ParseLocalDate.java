@@ -19,12 +19,12 @@ public class ParseLocalDate extends CellProcessorAdaptor {
     }
 
     @Override
-    public Object execute(Object value, CsvContext context) {
+    public LocalDate execute(Object value, CsvContext context) {
         validateInputNotNull(value, context);
 
         DateTimeFormatter[] dateFormats = {
                 DateTimeFormatter.ofPattern("yyyy-MM-dd"),
-                DateTimeFormatter.ofPattern("MM/dd/yyyy") };
+                DateTimeFormatter.ofPattern("MM/dd/yyyy")};
 
         LocalDate date = null;
         for (DateTimeFormatter dtf : dateFormats) {
@@ -36,8 +36,9 @@ public class ParseLocalDate extends CellProcessorAdaptor {
             }
         }
 
-        if (date == null)
+        if (date == null) {
             throw new SuperCsvCellProcessorException("Date could not be parsed", context, this);
+        }
 
         return date;
     }

@@ -28,7 +28,7 @@ public class EmailDataCalculator {
     private List<EmailData> prepareEmailsDataForBirthdayPersons(List<Recipient> personsInformation, LocalDate now) {
 
         return personsInformation.stream()
-//                .filter(recipient -> isCurrentOrPreviousWeekendsBirthday(now, recipient))
+                .filter(recipient -> isCurrentOrPreviousWeekendsBirthday(now, recipient))
                 .map(recipient -> EmailData.builder()
                         .type(EmailType.BIRTHDAY)
                         .to(recipient)

@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface PersonInfoLoader {
 
-    List<Recipient> loadPersonInformation();
+    List<Recipient> loadPersonInformation() throws LoadRecipientsException;
 }

@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class CsvRecipient {
+public class RecipientCsvEntity {
     private LocalDate birthday;
     private String fullName;
     private String email;

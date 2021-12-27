@@ -1,5 +1,6 @@
 package ua.dp.dryzhyruk.core;
 
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.dp.dryzhyruk.core.email.content.generator.EmailContent;
@@ -32,6 +33,7 @@ public class SendProcess {
         this.emailSender = emailSender;
     }
 
+    @SneakyThrows
     public void execute() {
         List<Recipient> recipient = personInfoLoader.loadPersonInformation();
         List<EmailData> emailsData = emailRecipientCalculator.prepareEmailsData(recipient);
