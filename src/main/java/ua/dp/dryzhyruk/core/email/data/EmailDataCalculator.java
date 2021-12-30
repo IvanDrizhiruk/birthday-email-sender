@@ -1,6 +1,8 @@
 package ua.dp.dryzhyruk.core.email.data;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ua.dp.dryzhyruk.core.email.content.generator.BirthdayEmailGenerator;
 import ua.dp.dryzhyruk.core.recipient.loader.Recipient;
 
 import java.time.Clock;
@@ -12,32 +14,31 @@ import java.util.stream.Collectors;
 @Service
 public class EmailDataCalculator {
 
+    private final BirthdayEmailGenerator birthdayEmailGenerator;
     private final Clock clock;
 
-    public EmailDataCalculator(Clock clock) {
+    @Autowired
+    public EmailDataCalculator(
+            BirthdayEmailGenerator birthdayEmailGenerator,
+            Clock clock) {
+        this.birthdayEmailGenerator = birthdayEmailGenerator;
         this.clock = clock;
     }
 
-    public List<EmailData> prepareEmailsData(List<Recipient> personsInformation) {
-
+    public List<EmailData> prepareEmails(List<Recipient> personsInformation) {
         LocalDate now = LocalDate.now(clock);
-
-        return prepareEmailsDataForBirthdayPersons(personsInformation, now);
-    }
-
-    private List<EmailData> prepareEmailsDataForBirthdayPersons(List<Recipient> personsInformation, LocalDate now) {
 
         return personsInformation.stream()
                 .filter(recipient -> isCurrentOrPreviousWeekendsBirthday(now, recipient))
                 .map(recipient -> EmailData.builder()
-                        .type(EmailType.BIRTHDAY)
                         .to(recipient)
+                        .emailContent(birthdayEmailGenerator.generate(recipient))
                         .build())
                 .collect(Collectors.toList());
     }
 
     private boolean isCurrentOrPreviousWeekendsBirthday(LocalDate now, Recipient recipient) {
-        if(isCurrentDayBirthday(now, recipient)) {
+        if (isCurrentDayBirthday(now, recipient)) {
             return true;
         }
 
@@ -50,7 +51,7 @@ public class EmailDataCalculator {
         LocalDate saturday = now.minusDays(2);
         return isCurrentDayBirthday(sunday, recipient) || isCurrentDayBirthday(saturday, recipient);
 
-        //TODO ad case for 02.29 -> send on next day
+        //TODO adв case for 02.29 -> send on next day
     }
 
     private boolean isCurrentDayBirthday(LocalDate now, Recipient recipient) {

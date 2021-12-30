@@ -7,6 +7,8 @@ import ua.dp.dryzhyruk.core.recipient.loader.Recipient;
 @Value
 @Builder
 public class EmailData {
-    EmailType type;
     Recipient to;
+
+    EmailContent emailContent;
+
 }

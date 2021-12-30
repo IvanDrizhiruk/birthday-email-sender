@@ -6,12 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.io.FileSystemResourceLoader;
 import org.springframework.core.io.ResourceLoader;
 import ua.dp.dryzhyruk.app.config.FreemarkerConfiguration;
-import ua.dp.dryzhyruk.core.email.content.generator.EmailContent;
-import ua.dp.dryzhyruk.core.email.data.EmailData;
-import ua.dp.dryzhyruk.core.email.data.EmailType;
-import ua.dp.dryzhyruk.core.recipient.loader.Recipient;
+import ua.dp.dryzhyruk.core.email.data.EmailContent;
 
-import java.time.LocalDate;
+import java.util.Map;
 
 class EmailContentGeneratorImplTest {
 
@@ -22,15 +19,8 @@ class EmailContentGeneratorImplTest {
         Configuration configuration = new FreemarkerConfiguration()
                 .newConfiguration("src/test/resources/template-for-test", resourceLoader);
 
-        EmailData emailData = EmailData.builder()
-                .type(EmailType.BIRTHDAY)
-                .to(Recipient.builder()
-                        .dateOfBirth(LocalDate.of(1986, 6, 25))
-                        .recipientFullName("Ivan Dryzhyruk")
-                        .recipientEmail("ivan.drizhiruk@gmail.com")
-                        .managerEmail("ivan.drizhiruk-manager@gmail.com")
-                        .build())
-                .build();
+        Map<String, Object> model = Map.of(
+                "recipientFullName", "Ivan Dryzhyruk");
 
         EmailContent expected = EmailContent.builder()
                 .htmlContent("<!DOCTYPE html>\n" +
@@ -50,8 +40,8 @@ class EmailContentGeneratorImplTest {
                 .build();
 
         //when
-        EmailContent actual = new EmailContentGeneratorImpl(configuration)
-                .generateEmailContent(emailData);
+        EmailContent actual = new EmailContentGeneratorImpl(configuration, resourceLoader)
+                .generateFromTemplate("birthday.html", model);
 
         //then
         Assertions.assertThat(actual).isEqualTo(expected);

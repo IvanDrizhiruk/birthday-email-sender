@@ -6,12 +6,14 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
-import ua.dp.dryzhyruk.core.email.content.generator.EmailContent;
 import ua.dp.dryzhyruk.core.email.content.generator.EmailContentGenerator;
-import ua.dp.dryzhyruk.core.email.data.EmailData;
+import ua.dp.dryzhyruk.core.email.data.EmailContent;
 
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -19,40 +21,29 @@ import java.util.Map;
 public class EmailContentGeneratorImpl implements EmailContentGenerator {
 
     private final Configuration freemarkerConfiguration;
+    private final ResourceLoader resourceLoader;
 
     @Autowired
     public EmailContentGeneratorImpl(
-            @Qualifier("freemarkerConfiguration")Configuration freemarkerConfiguration) {
+            @Qualifier("freemarkerConfiguration") Configuration freemarkerConfiguration,
+            ResourceLoader resourceLoader) {
         this.freemarkerConfiguration = freemarkerConfiguration;
-    }
-
-    @Override
-    public EmailContent generateEmailContent(EmailData emailData) {
-        return EmailContent.builder()
-                .htmlContent(generateHtmlContent(emailData))
-                .build();
-    }
-
-    private String generateHtmlContent(EmailData emailData) {
-        switch (emailData.getType()) {
-            case BIRTHDAY:
-                return generateHtmlContentForBirthday(emailData);
-            case WEEKLY_FOR_MANAGER: //TODO
-            default:
-                throw new UnsupportedOperationException("Unsupported email type: " + emailData.getType());
-        }
-    }
-
-    private String generateHtmlContentForBirthday(EmailData emailData) {
-        Map<String, Object> model = Map.of(
-                "recipientFullName", emailData.getTo().getRecipientFullName());
-        return generateFromTemplate("birthday.html", model);
+        this.resourceLoader = resourceLoader;
     }
 
     @SneakyThrows
-    private String generateFromTemplate(String templateName, Map<String, Object> model) {
+    @Override
+    public EmailContent generateFromTemplate(String templateName, Map<String, Object> model) {
+
+        Resource resource = resourceLoader.getResource("templates/mail-logo.png");
+
         Template template = freemarkerConfiguration.getTemplate(templateName);
 
-        return FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
+        String htmlContent = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
+
+        return EmailContent.builder()
+                .htmlContent(htmlContent)
+                .images(List.of(resource))
+                .build();
     }
 }
