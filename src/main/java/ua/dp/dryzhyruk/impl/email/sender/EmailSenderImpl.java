@@ -4,9 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import ua.dp.dryzhyruk.core.email.data.EmailContent;
-import ua.dp.dryzhyruk.core.email.data.EmailData;
-import ua.dp.dryzhyruk.core.email.sender.EmailSender;
+import ua.dp.dryzhyruk.ports.email.data.EmailContent;
+import ua.dp.dryzhyruk.ports.email.data.EmailData;
+import ua.dp.dryzhyruk.ports.email.sender.EmailSender;
 
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -32,7 +32,7 @@ public class EmailSenderImpl implements EmailSender {
         try {
             MimeMessage mimeMessage = prepareMimeMessage(
                     emailData.getEmailContent(),
-                    emailData.getTo().getRecipientEmail());
+                    emailData.getTo());
 
             Transport.send(mimeMessage);
         } catch (MessagingException e) {

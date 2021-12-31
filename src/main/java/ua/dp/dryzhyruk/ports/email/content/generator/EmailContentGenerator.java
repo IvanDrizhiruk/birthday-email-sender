@@ -1,6 +1,6 @@
-package ua.dp.dryzhyruk.core.email.content.generator;
+package ua.dp.dryzhyruk.ports.email.content.generator;
 
-import ua.dp.dryzhyruk.core.email.data.EmailContent;
+import ua.dp.dryzhyruk.ports.email.data.EmailContent;
 
 import java.util.Map;
 

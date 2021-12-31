@@ -10,8 +10,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
-import ua.dp.dryzhyruk.core.email.content.generator.EmailContentGenerator;
-import ua.dp.dryzhyruk.core.email.data.EmailContent;
+import ua.dp.dryzhyruk.ports.email.content.generator.EmailContentGenerator;
+import ua.dp.dryzhyruk.ports.email.data.EmailContent;
 
 import java.util.List;
 import java.util.Map;

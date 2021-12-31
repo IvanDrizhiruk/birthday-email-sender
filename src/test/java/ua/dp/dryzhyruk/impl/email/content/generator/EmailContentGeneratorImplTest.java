@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.io.FileSystemResourceLoader;
 import org.springframework.core.io.ResourceLoader;
 import ua.dp.dryzhyruk.app.config.FreemarkerConfiguration;
-import ua.dp.dryzhyruk.core.email.data.EmailContent;
+import ua.dp.dryzhyruk.ports.email.data.EmailContent;
 
 import java.util.Map;
 

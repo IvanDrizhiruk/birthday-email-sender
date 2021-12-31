@@ -1,4 +1,4 @@
-package ua.dp.dryzhyruk.core.recipient.loader;
+package ua.dp.dryzhyruk.ports.recipient.loader;
 
 import java.util.List;
 

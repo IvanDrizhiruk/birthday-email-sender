@@ -4,8 +4,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.ResourceLoader;
-import ua.dp.dryzhyruk.core.recipient.loader.LoadRecipientsException;
-import ua.dp.dryzhyruk.core.recipient.loader.Recipient;
+import ua.dp.dryzhyruk.ports.recipient.loader.LoadRecipientsException;
+import ua.dp.dryzhyruk.ports.recipient.loader.Recipient;
 
 import java.time.LocalDate;
 import java.util.List;

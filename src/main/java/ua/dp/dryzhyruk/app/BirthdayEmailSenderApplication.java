@@ -16,9 +16,4 @@ public class BirthdayEmailSenderApplication {
     public static void main(String[] args) {
         SpringApplication.run(BirthdayEmailSenderApplication.class, args);
     }
-
-    @Bean
-    public Clock newClock() {
-        return Clock.systemDefaultZone();
-    }
 }

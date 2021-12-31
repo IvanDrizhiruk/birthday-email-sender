@@ -1,14 +1,17 @@
 package ua.dp.dryzhyruk.core.email.content.generator;
 
 import org.springframework.stereotype.Service;
-import ua.dp.dryzhyruk.core.email.data.EmailContent;
-import ua.dp.dryzhyruk.core.recipient.loader.Recipient;
+import ua.dp.dryzhyruk.ports.email.data.EmailContent;
+import ua.dp.dryzhyruk.ports.recipient.loader.Recipient;
+import ua.dp.dryzhyruk.ports.email.content.generator.EmailContentGenerator;
 
 import java.util.Map;
 
 @Service
 public class BirthdayEmailGenerator {
 
+    public static final String BIRTHDAY_TEMPLATE_NAME = "birthday.html";
+    public static final String PARAMETER_RECIPIENT_FULL_NAME = "recipientFullName";
     private final EmailContentGenerator emailContentGenerator;
 
     public BirthdayEmailGenerator(EmailContentGenerator emailContentGenerator) {
@@ -17,8 +20,8 @@ public class BirthdayEmailGenerator {
 
     public EmailContent generate(Recipient recipient) {
         Map<String, Object> model = Map.of(
-                "recipientFullName", recipient.getRecipientFullName());
+                PARAMETER_RECIPIENT_FULL_NAME, recipient.getRecipientFullName());
 
-        return emailContentGenerator.generateFromTemplate("birthday.html", model);
+        return emailContentGenerator.generateFromTemplate(BIRTHDAY_TEMPLATE_NAME, model);
     }
 }

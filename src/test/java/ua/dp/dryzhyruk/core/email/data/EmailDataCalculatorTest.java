@@ -5,7 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import ua.dp.dryzhyruk.ClockUtils;
 import ua.dp.dryzhyruk.core.email.content.generator.BirthdayEmailGenerator;
-import ua.dp.dryzhyruk.core.recipient.loader.Recipient;
+import ua.dp.dryzhyruk.ports.recipient.loader.Recipient;
+import ua.dp.dryzhyruk.ports.email.data.EmailContent;
+import ua.dp.dryzhyruk.ports.email.data.EmailData;
 
 import java.time.Clock;
 import java.time.LocalDate;
@@ -58,11 +60,11 @@ class EmailDataCalculatorTest {
 
         List<EmailData> expected = List.of(
                 EmailData.builder()
-                        .to(recipient1.toBuilder().build())
+                        .to("ivan.drizhiruk@gmail.com" )
                         .emailContent(emailContent1.toBuilder().build())
                         .build(),
                 EmailData.builder()
-                        .to(recipient2.toBuilder().build())
+                        .to("mihail.fake@gmail.com")
                         .emailContent(emailContent2.toBuilder().build())
                         .build()
         );
@@ -114,11 +116,11 @@ class EmailDataCalculatorTest {
 
         List<EmailData> expected = List.of(
                 EmailData.builder()
-                        .to(recipient1.toBuilder().build())
+                        .to("mihail.fake@gmail.com")
                         .emailContent(emailContent1.toBuilder().build())
                         .build(),
                 EmailData.builder()
-                        .to(recipient2.toBuilder().build())
+                        .to("alexander.fake@gmail.com")
                         .emailContent(emailContent2.toBuilder().build())
                         .build()
         );

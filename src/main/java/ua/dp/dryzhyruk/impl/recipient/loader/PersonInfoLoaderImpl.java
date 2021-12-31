@@ -11,9 +11,9 @@ import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.io.CsvBeanReader;
 import org.supercsv.io.ICsvBeanReader;
 import org.supercsv.prefs.CsvPreference;
-import ua.dp.dryzhyruk.core.recipient.loader.LoadRecipientsException;
-import ua.dp.dryzhyruk.core.recipient.loader.PersonInfoLoader;
-import ua.dp.dryzhyruk.core.recipient.loader.Recipient;
+import ua.dp.dryzhyruk.ports.recipient.loader.LoadRecipientsException;
+import ua.dp.dryzhyruk.ports.recipient.loader.PersonInfoLoader;
+import ua.dp.dryzhyruk.ports.recipient.loader.Recipient;
 
 import java.io.FileReader;
 import java.io.IOException;
