@@ -1,5 +1,6 @@
 package ua.dp.dryzhyruk.impl.email.sender;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -12,6 +13,7 @@ import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.MimeMessage;
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
@@ -23,7 +25,8 @@ public class EmailSenderImpl implements EmailSender {
     public static final String MAIL_SMTP_HOST = "mail.smtp.host";
     private final String noReplyEmailAddress;
 
-    public EmailSenderImpl(@Value("${email.no-reply.address}") String noReplyEmailAddress) {
+    public EmailSenderImpl(
+            @Value("${email.no-reply.address}") String noReplyEmailAddress) {
         this.noReplyEmailAddress = noReplyEmailAddress;
     }
 
@@ -49,12 +52,18 @@ public class EmailSenderImpl implements EmailSender {
         MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, StandardCharsets.UTF_8.name());
         message.setFrom(noReplyEmailAddress);
         message.setTo(to);
-        message.setSubject("This is the Mega Subject!!!"); //TODO
+        message.setSubject(emailContent.getSubject());
         message.setText(emailContent.getHtmlContent(), true);
 
-        message.addInline("attachment.png", emailContent.getImages().get(0));
-
+        emailContent.getImages()
+                .forEach(
+                        image -> inlineImage(message, image));
 
         return mimeMessage;
+    }
+
+    @SneakyThrows
+    private void inlineImage(MimeMessageHelper message, String image) {
+        message.addInline(image, new File(image));
     }
 }

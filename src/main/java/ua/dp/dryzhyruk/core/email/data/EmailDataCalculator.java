@@ -3,8 +3,8 @@ package ua.dp.dryzhyruk.core.email.data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.dp.dryzhyruk.core.email.content.generator.BirthdayEmailGenerator;
-import ua.dp.dryzhyruk.ports.recipient.loader.Recipient;
 import ua.dp.dryzhyruk.ports.email.data.EmailData;
+import ua.dp.dryzhyruk.ports.recipient.loader.Recipient;
 
 import java.time.Clock;
 import java.time.DayOfWeek;

@@ -1,9 +1,9 @@
 package ua.dp.dryzhyruk.core.email.content.generator;
 
 import org.springframework.stereotype.Service;
+import ua.dp.dryzhyruk.ports.email.content.generator.EmailContentGenerator;
 import ua.dp.dryzhyruk.ports.email.data.EmailContent;
 import ua.dp.dryzhyruk.ports.recipient.loader.Recipient;
-import ua.dp.dryzhyruk.ports.email.content.generator.EmailContentGenerator;
 
 import java.util.Map;
 

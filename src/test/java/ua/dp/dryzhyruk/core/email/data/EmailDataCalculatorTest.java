@@ -5,9 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import ua.dp.dryzhyruk.ClockUtils;
 import ua.dp.dryzhyruk.core.email.content.generator.BirthdayEmailGenerator;
-import ua.dp.dryzhyruk.ports.recipient.loader.Recipient;
 import ua.dp.dryzhyruk.ports.email.data.EmailContent;
 import ua.dp.dryzhyruk.ports.email.data.EmailData;
+import ua.dp.dryzhyruk.ports.recipient.loader.Recipient;
 
 import java.time.Clock;
 import java.time.LocalDate;
@@ -42,10 +42,12 @@ class EmailDataCalculatorTest {
                 .build();
 
         EmailContent emailContent1 = EmailContent.builder()
+                .subject("This is the Mega Subject!!!")
                 .htmlContent("recipient 1")
                 .build();
 
         EmailContent emailContent2 = EmailContent.builder()
+                .subject("This is the Mega Subject!!!")
                 .htmlContent("recipient 2")
                 .build();
 

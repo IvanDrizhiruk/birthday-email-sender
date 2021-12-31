@@ -2,7 +2,6 @@ package ua.dp.dryzhyruk.ports.email.data;
 
 import lombok.Builder;
 import lombok.Value;
-import org.springframework.core.io.Resource;
 
 import java.util.List;
 
@@ -10,6 +9,7 @@ import java.util.List;
 @Builder(toBuilder = true)
 public class EmailContent {
 
+    String subject;
     String htmlContent;
-    List<Resource> images;
+    List<String> images;
 }

@@ -1,13 +1,9 @@
 package ua.dp.dryzhyruk.impl.email.content.generator;
 
-import freemarker.template.Configuration;
 import freemarker.template.Template;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import ua.dp.dryzhyruk.ports.email.content.generator.EmailContentGenerator;
@@ -18,32 +14,30 @@ import java.util.Map;
 
 @Slf4j
 @Service
-public class EmailContentGeneratorImpl implements EmailContentGenerator {
+public class FreemarkerEmailContentGenerator implements EmailContentGenerator {
 
-    private final Configuration freemarkerConfiguration;
-    private final ResourceLoader resourceLoader;
+    private final FreemarkerTemplateResourcesLoader freemarkerTemplateResourcesLoader;
 
     @Autowired
-    public EmailContentGeneratorImpl(
-            @Qualifier("freemarkerConfiguration") Configuration freemarkerConfiguration,
-            ResourceLoader resourceLoader) {
-        this.freemarkerConfiguration = freemarkerConfiguration;
-        this.resourceLoader = resourceLoader;
+    public FreemarkerEmailContentGenerator(
+            FreemarkerTemplateResourcesLoader freemarkerTemplateResourcesLoader) {
+        this.freemarkerTemplateResourcesLoader = freemarkerTemplateResourcesLoader;
     }
 
     @SneakyThrows
     @Override
     public EmailContent generateFromTemplate(String templateName, Map<String, Object> model) {
 
-        Resource resource = resourceLoader.getResource("templates/mail-logo.png");
+        Template template = freemarkerTemplateResourcesLoader.getTemplate(templateName);
 
-        Template template = freemarkerConfiguration.getTemplate(templateName);
+        List<String> imagesPaths = freemarkerTemplateResourcesLoader.getFilePathsFromDir("images");
 
         String htmlContent = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
 
         return EmailContent.builder()
+                .subject("This is the Mega Subject!!!")
                 .htmlContent(htmlContent)
-                .images(List.of(resource))
+                .images(imagesPaths)
                 .build();
     }
 }
