@@ -1,6 +1,6 @@
 package ua.dp.dryzhyruk.impl.recipient.loader;
 
-import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 public class PersonInfoLoaderImpl implements PersonInfoLoader {
 
@@ -34,9 +35,9 @@ public class PersonInfoLoaderImpl implements PersonInfoLoader {
         this.recipientsFilePath = recipientsFilePath;
     }
 
-    @SneakyThrows
     public List<Recipient> loadPersonInformation() throws LoadRecipientsException {
-        try (ICsvBeanReader csvBeanReader = prepareCsvBeanReader()) {
+        log.info("Load recipient list from {}", recipientsFilePath);
+        try (ICsvBeanReader csvBeanReader = prepareCsvBeanReader(recipientsFilePath)) {
             final String[] header = csvBeanReader.getHeader(true);
             final CellProcessor[] processors = prepareProcessors();
 
@@ -53,7 +54,7 @@ public class PersonInfoLoaderImpl implements PersonInfoLoader {
         }
     }
 
-    private CsvBeanReader prepareCsvBeanReader() throws IOException {
+    private CsvBeanReader prepareCsvBeanReader(String recipientsFilePath) throws IOException {
         Resource resource = resourceLoader.getResource(recipientsFilePath);
         return new CsvBeanReader(new FileReader(resource.getFile()), CsvPreference.STANDARD_PREFERENCE);
     }

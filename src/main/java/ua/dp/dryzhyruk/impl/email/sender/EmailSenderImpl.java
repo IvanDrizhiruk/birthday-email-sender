@@ -21,8 +21,8 @@ import java.util.Properties;
 @Service
 public class EmailSenderImpl implements EmailSender {
 
-    public static final String LOCALHOST = "localhost";
     public static final String MAIL_SMTP_HOST = "mail.smtp.host";
+    public static final String LOCALHOST = "localhost";
     private final String noReplyEmailAddress;
 
     public EmailSenderImpl(
@@ -32,6 +32,16 @@ public class EmailSenderImpl implements EmailSender {
 
     @Override
     public void sendEmail(EmailData emailData) {
+        log.info("Try to send mail: \n" +
+                        " to: {},\n" +
+                        " subject: {}\n" +
+                        " content: {}\n" +
+                        " images: {}.",
+                emailData.getTo(),
+                emailData.getEmailContent().getSubject(),
+                emailData.getEmailContent().getHtmlContent(),
+                emailData.getEmailContent().getImages());
+
         try {
             MimeMessage mimeMessage = prepareMimeMessage(
                     emailData.getEmailContent(),

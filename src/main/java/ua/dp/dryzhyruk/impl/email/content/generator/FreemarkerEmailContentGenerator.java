@@ -16,6 +16,7 @@ import java.util.Map;
 @Service
 public class FreemarkerEmailContentGenerator implements EmailContentGenerator {
 
+    private static final String IMAGES_FOLDER_NAME = "images";
     private final FreemarkerTemplateResourcesLoader freemarkerTemplateResourcesLoader;
 
     @Autowired
@@ -30,7 +31,7 @@ public class FreemarkerEmailContentGenerator implements EmailContentGenerator {
 
         Template template = freemarkerTemplateResourcesLoader.getTemplate(templateName);
 
-        List<String> imagesPaths = freemarkerTemplateResourcesLoader.getFilePathsFromDir("images");
+        List<String> imagesPaths = freemarkerTemplateResourcesLoader.getFilePathsFromDir(IMAGES_FOLDER_NAME);
 
         String htmlContent = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
 
