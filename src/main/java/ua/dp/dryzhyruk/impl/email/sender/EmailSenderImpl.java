@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import ua.dp.dryzhyruk.ports.email.data.EmailContent;
 import ua.dp.dryzhyruk.ports.email.data.EmailData;
 import ua.dp.dryzhyruk.ports.email.sender.EmailSender;
 
@@ -40,12 +39,10 @@ public class EmailSenderImpl implements EmailSender {
                 emailData.getTo(),
                 emailData.getEmailContent().getSubject(),
                 emailData.getEmailContent().getHtmlContent(),
-                emailData.getEmailContent().getImages());
+                emailData.getEmailContent().getImagesAbsolutePaths());
 
         try {
-            MimeMessage mimeMessage = prepareMimeMessage(
-                    emailData.getEmailContent(),
-                    emailData.getTo());
+            MimeMessage mimeMessage = prepareMimeMessage(emailData);
 
             Transport.send(mimeMessage);
         } catch (MessagingException e) {
@@ -53,7 +50,7 @@ public class EmailSenderImpl implements EmailSender {
         }
     }
 
-    private MimeMessage prepareMimeMessage(EmailContent emailContent, String to) throws MessagingException {
+    private MimeMessage prepareMimeMessage(EmailData emailData) throws MessagingException {
         Properties properties = System.getProperties();
         properties.setProperty(MAIL_SMTP_HOST, LOCALHOST);
         Session session = Session.getDefaultInstance(properties);
@@ -61,19 +58,22 @@ public class EmailSenderImpl implements EmailSender {
         MimeMessage mimeMessage = new MimeMessage(session);
         MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, StandardCharsets.UTF_8.name());
         message.setFrom(noReplyEmailAddress);
-        message.setTo(to);
-        message.setSubject(emailContent.getSubject());
-        message.setText(emailContent.getHtmlContent(), true);
+        message.setTo(emailData.getTo());
+        message.setSubject(emailData.getEmailContent().getSubject());
+        message.setText(emailData.getEmailContent().getHtmlContent(), true);
 
-        emailContent.getImages()
+        emailData.getEmailContent().getImagesAbsolutePaths()
                 .forEach(
-                        image -> inlineImage(message, image));
+                        imageAbsolutePath -> inlineImage(message, imageAbsolutePath));
 
         return mimeMessage;
     }
 
     @SneakyThrows
-    private void inlineImage(MimeMessageHelper message, String image) {
-        message.addInline(image, new File(image));
+    private void inlineImage(MimeMessageHelper message, String imageAbsolutePath) {
+        File imageFile = new File(imageAbsolutePath);
+        String imageName = imageFile.getName();
+
+        message.addInline(imageName, imageFile);
     }
 }

@@ -38,7 +38,7 @@ public class FreemarkerEmailContentGenerator implements EmailContentGenerator {
         return EmailContent.builder()
                 .subject("This is the Mega Subject!!!")
                 .htmlContent(htmlContent)
-                .images(imagesPaths)
+                .imagesAbsolutePaths(imagesPaths)
                 .build();
     }
 }

@@ -11,5 +11,5 @@ public class EmailContent {
 
     String subject;
     String htmlContent;
-    List<String> images;
+    List<String> imagesAbsolutePaths;
 }

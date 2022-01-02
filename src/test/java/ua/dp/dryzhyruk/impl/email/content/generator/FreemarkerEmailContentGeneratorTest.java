@@ -41,7 +41,7 @@ class FreemarkerEmailContentGeneratorTest {
                         "    </p>\n" +
                         "  </body>\n" +
                         "</html>\n")
-                .images(Stream.of(
+                .imagesAbsolutePaths(Stream.of(
                                 new File("src/test/resources/template-for-test/images/file1.png").getAbsolutePath(),
                                 new File("src/test/resources/template-for-test/images/file2.gif").getAbsolutePath(),
                                 new File("src/test/resources/template-for-test/images/file3.jpeg").getAbsolutePath())
