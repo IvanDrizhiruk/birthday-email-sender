@@ -30,7 +30,7 @@ public class EmailDataCalculator {
         LocalDate now = LocalDate.now(clock);
 
         return personsInformation.stream()
-                .filter(recipient -> isCurrentOrPreviousWeekendsBirthday(now, recipient))
+                .filter(recipient -> isCurrentAndNotWeekendsBirthday(now, recipient))
                 .map(recipient -> EmailData.builder()
                         .to(recipient.getRecipientEmail())
                         .emailContent(birthdayEmailGenerator.generate(recipient))
@@ -38,7 +38,11 @@ public class EmailDataCalculator {
                 .collect(Collectors.toList());
     }
 
-    private boolean isCurrentOrPreviousWeekendsBirthday(LocalDate now, Recipient recipient) {
+    private boolean isCurrentAndNotWeekendsBirthday(LocalDate now, Recipient recipient) {
+        boolean isWeekend = now.getDayOfWeek() == DayOfWeek.SATURDAY || now.getDayOfWeek() == DayOfWeek.SUNDAY;
+        if (isWeekend) {
+            return false;
+        }
         if (isCurrentDayBirthday(now, recipient)) {
             return true;
         }
@@ -50,7 +54,9 @@ public class EmailDataCalculator {
 
         LocalDate sunday = now.minusDays(1);
         LocalDate saturday = now.minusDays(2);
-        return isCurrentDayBirthday(sunday, recipient) || isCurrentDayBirthday(saturday, recipient);
+        boolean isBirthdayOnPreviuyseWeekends = isCurrentDayBirthday(sunday, recipient) || isCurrentDayBirthday(saturday, recipient);
+
+        return isBirthdayOnPreviuyseWeekends;
 
         //TODO adв case for 02.29 -> send on next day
     }
