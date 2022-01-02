@@ -36,7 +36,7 @@ public class FreemarkerEmailContentGenerator implements EmailContentGenerator {
         String htmlContent = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
 
         return EmailContent.builder()
-                .subject("This is the Mega Subject!!!")
+                .subject("This is the Mega Subject!!!") //TODO use subject from template
                 .htmlContent(htmlContent)
                 .imagesAbsolutePaths(imagesPaths)
                 .build();
