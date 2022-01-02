@@ -227,4 +227,12 @@ class EmailDataCalculatorTest {
         Assertions.assertThat(actual)
                 .isEmpty();
     }
+
+    //TODO
+    //  28.01   01.01 => send
+      // weekend => send
+    //  29.01   01.01 => not send
+      //weekend
+    //01.01 - weekend - next day - send
+
 }
