@@ -296,12 +296,149 @@ class EmailDataCalculatorTest {
     }
 
 
+    @Test
+    void in_case_leap_year_persons_for_current_day_should_be_selected_for_birthday_emails() {
+        //given
+        Clock nowClock = ClockUtils.fixedClock("2016-02-29T16:45:42.00Z");
+        BirthdayEmailGenerator birthdayEmailGenerator = Mockito.mock(BirthdayEmailGenerator.class);
+        TestModeController testModeController = new TestModeController(false, "ivan.drizhiruk@gmail.com");
 
-    //TODO
-    //  28.01   01.01 => send
-    // weekend => send
-    //  29.01   01.01 => not send
-    //weekend
-    //01.01 - weekend - next day - send
+        Recipient recipient = Recipient.builder()
+                .dateOfBirth(LocalDate.of(2000, 2, 29))
+                .recipientFullName("Mihail Fake")
+                .recipientEmail("mihail.fake@gmail.com")
+                .managerEmail("mihail.fake-manager@gmail.com")
+                .build();
 
+        EmailContent emailContent = EmailContent.builder()
+                .subject("This is the Mega Subject!!!")
+                .htmlContent("recipient 2")
+                .build();
+
+        Mockito.when(birthdayEmailGenerator.generate(recipient)).thenReturn(emailContent);
+
+        List<Recipient> personsInformation = List.of(recipient);
+
+        List<EmailData> expected = List.of(
+                EmailData.builder()
+                        .to("mihail.fake@gmail.com")
+                        .emailContent(emailContent.toBuilder().build())
+                        .build());
+
+        //when
+        List<EmailData> actual = new EmailDataCalculator(birthdayEmailGenerator, testModeController, nowClock)
+                .prepareEmails(personsInformation);
+
+        //then
+        Assertions.assertThat(actual)
+                .containsExactlyInAnyOrderElementsOf(expected);
+    }
+
+    @Test
+    void in_case_not_leap_year_persons_for_current_day_should_be_selected_for_birthday_emails_in_next_day() {
+        //given
+        Clock nowClock = ClockUtils.fixedClock("2021-03-01T16:45:42.00Z");
+        BirthdayEmailGenerator birthdayEmailGenerator = Mockito.mock(BirthdayEmailGenerator.class);
+        TestModeController testModeController = new TestModeController(false, "ivan.drizhiruk@gmail.com");
+
+        Recipient recipient = Recipient.builder()
+                .dateOfBirth(LocalDate.of(2000, 2, 29))
+                .recipientFullName("Mihail Fake")
+                .recipientEmail("mihail.fake@gmail.com")
+                .managerEmail("mihail.fake-manager@gmail.com")
+                .build();
+
+        EmailContent emailContent = EmailContent.builder()
+                .subject("This is the Mega Subject!!!")
+                .htmlContent("recipient 2")
+                .build();
+
+        Mockito.when(birthdayEmailGenerator.generate(recipient)).thenReturn(emailContent);
+
+        List<Recipient> personsInformation = List.of(recipient);
+
+        List<EmailData> expected = List.of(
+                EmailData.builder()
+                        .to("mihail.fake@gmail.com")
+                        .emailContent(emailContent.toBuilder().build())
+                        .build());
+
+        //when
+        List<EmailData> actual = new EmailDataCalculator(birthdayEmailGenerator, testModeController, nowClock)
+                .prepareEmails(personsInformation);
+
+        //then
+        Assertions.assertThat(actual)
+                .containsExactlyInAnyOrderElementsOf(expected);
+    }
+
+    @Test
+    void in_case_not_leap_year_persons_should_not_be_selected_for_birthday_emails() {
+        //given
+        Clock nowClock = ClockUtils.fixedClock("2020-02-29T16:45:42.00Z");
+        BirthdayEmailGenerator birthdayEmailGenerator = Mockito.mock(BirthdayEmailGenerator.class);
+        TestModeController testModeController = new TestModeController(false, "ivan.drizhiruk@gmail.com");
+
+        Recipient recipient = Recipient.builder()
+                .dateOfBirth(LocalDate.of(2000, 2, 29))
+                .recipientFullName("Mihail Fake")
+                .recipientEmail("mihail.fake@gmail.com")
+                .managerEmail("mihail.fake-manager@gmail.com")
+                .build();
+
+        EmailContent emailContent = EmailContent.builder()
+                .subject("This is the Mega Subject!!!")
+                .htmlContent("recipient 2")
+                .build();
+
+        Mockito.when(birthdayEmailGenerator.generate(recipient)).thenReturn(emailContent);
+
+        List<Recipient> personsInformation = List.of(recipient);
+
+        //when
+        List<EmailData> actual = new EmailDataCalculator(birthdayEmailGenerator, testModeController, nowClock)
+                .prepareEmails(personsInformation);
+
+        //then
+        Assertions.assertThat(actual)
+                .isEmpty();
+    }
+
+    @Test
+    void in_case_not_leap_year_persons_should_not_be_selected_for_birthday_emails_in_next_day_after_weekends() {
+        //given
+        Clock nowClock = ClockUtils.fixedClock("2020-03-02T16:45:42.00Z");
+        BirthdayEmailGenerator birthdayEmailGenerator = Mockito.mock(BirthdayEmailGenerator.class);
+        TestModeController testModeController = new TestModeController(false, "ivan.drizhiruk@gmail.com");
+
+        Recipient recipient = Recipient.builder()
+                .dateOfBirth(LocalDate.of(2000, 2, 29))
+                .recipientFullName("Mihail Fake")
+                .recipientEmail("mihail.fake@gmail.com")
+                .managerEmail("mihail.fake-manager@gmail.com")
+                .build();
+
+        EmailContent emailContent = EmailContent.builder()
+                .subject("This is the Mega Subject!!!")
+                .htmlContent("recipient 2")
+                .build();
+
+        Mockito.when(birthdayEmailGenerator.generate(recipient)).thenReturn(emailContent);
+
+        List<Recipient> personsInformation = List.of(recipient);
+
+        List<EmailData> expected = List.of(
+                EmailData.builder()
+                        .to("mihail.fake@gmail.com")
+                        .emailContent(emailContent.toBuilder().build())
+                        .build());
+
+        //when
+        List<EmailData> actual = new EmailDataCalculator(birthdayEmailGenerator, testModeController, nowClock)
+                .prepareEmails(personsInformation);
+
+        //then
+        Assertions.assertThat(actual)
+                .containsExactlyInAnyOrderElementsOf(expected);
+    }
 }

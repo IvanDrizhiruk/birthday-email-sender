@@ -8,7 +8,7 @@ Input:
 Output:
 - sent email
 
-## Kiinds of sended emails
+## Kinds of send emails
 - mail with congratulations
   - send to person and cc to all
 TODO

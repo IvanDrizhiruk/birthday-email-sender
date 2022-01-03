@@ -10,6 +10,7 @@ import ua.dp.dryzhyruk.ports.recipient.loader.Recipient;
 import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,11 +46,13 @@ public class EmailDataCalculator {
     }
 
     private boolean isCurrentAndNotWeekendsBirthday(LocalDate now, Recipient recipient) {
+        Recipient recipientNormalised = normaliseRecipientForNotLeapYear29OfFebruary(now, recipient);
+
         boolean isWeekend = now.getDayOfWeek() == DayOfWeek.SATURDAY || now.getDayOfWeek() == DayOfWeek.SUNDAY;
         if (isWeekend) {
             return false;
         }
-        if (isCurrentDayBirthday(now, recipient)) {
+        if (isCurrentDayBirthday(now, recipientNormalised)) {
             return true;
         }
 
@@ -60,12 +63,21 @@ public class EmailDataCalculator {
 
         LocalDate sunday = now.minusDays(1);
         LocalDate saturday = now.minusDays(2);
-        boolean isBirthdayOnPreviousWeekends = isCurrentDayBirthday(sunday, recipient)
-                || isCurrentDayBirthday(saturday, recipient);
+        boolean isBirthdayOnPreviousWeekends = isCurrentDayBirthday(sunday, recipientNormalised)
+                || isCurrentDayBirthday(saturday, recipientNormalised);
 
         return isBirthdayOnPreviousWeekends;
+    }
 
-        //TODO adв case for 02.29 -> send on next day
+    private Recipient normaliseRecipientForNotLeapYear29OfFebruary(LocalDate now, Recipient recipient) {
+        if (!now.isLeapYear()
+                && recipient.getDateOfBirth().getMonth() == Month.FEBRUARY
+                && recipient.getDateOfBirth().getDayOfMonth() == 29) {
+            return recipient.toBuilder()
+                    .dateOfBirth(recipient.getDateOfBirth().plusDays(1))
+                    .build();
+        }
+        return recipient;
     }
 
     private boolean isCurrentDayBirthday(LocalDate now, Recipient recipient) {
