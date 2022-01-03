@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import ua.dp.dryzhyruk.core.SendProcess;
-import ua.dp.dryzhyruk.core.TestModeController;
+import ua.dp.dryzhyruk.core.test.mode.TestModeController;
 
 import javax.annotation.PostConstruct;
 

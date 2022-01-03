@@ -1,4 +1,4 @@
-package ua.dp.dryzhyruk.core;
+package ua.dp.dryzhyruk.core.test.mode;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

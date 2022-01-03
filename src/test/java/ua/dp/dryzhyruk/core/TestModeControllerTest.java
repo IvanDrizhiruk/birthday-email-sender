@@ -2,6 +2,7 @@ package ua.dp.dryzhyruk.core;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import ua.dp.dryzhyruk.core.test.mode.TestModeController;
 
 class TestModeControllerTest {
 
