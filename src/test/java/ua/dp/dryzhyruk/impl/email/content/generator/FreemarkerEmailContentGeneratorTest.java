@@ -16,7 +16,8 @@ class FreemarkerEmailContentGeneratorTest {
     @Test
     void html_content_should_be_generated_from_template() {
         //given
-        String templateName = "birthday.html";
+        String templateSubjectName = "birthdaySubject.txt";
+        String templateContentName = "birthdayContent.html";
 
         ResourceLoader resourceLoader = new FileSystemResourceLoader();
         FreemarkerTemplateResourcesLoader resourcesLoader = new FreemarkerTemplateResourcesLoader(
@@ -26,7 +27,7 @@ class FreemarkerEmailContentGeneratorTest {
                 "recipientFullName", "Ivan Dryzhyruk");
 
         EmailContent expected = EmailContent.builder()
-                .subject("This is the Mega Subject!!!")
+                .subject("Mega Happy birthday Ivan Dryzhyruk!!!")
                 .htmlContent("<!DOCTYPE html>\n" +
                         "<html>\n" +
                         "  <head>\n" +
@@ -50,7 +51,7 @@ class FreemarkerEmailContentGeneratorTest {
 
         //when
         EmailContent actual = new FreemarkerEmailContentGenerator(resourcesLoader)
-                .generateFromTemplate(templateName, model);
+                .generateFromTemplate(templateSubjectName, templateContentName, model);
 
         //then
         Assertions.assertThat(actual).isEqualTo(expected);

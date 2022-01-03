@@ -10,7 +10,8 @@ import java.util.Map;
 @Service
 public class BirthdayEmailGenerator {
 
-    public static final String BIRTHDAY_TEMPLATE_NAME = "birthday.html";
+    public static final String BIRTHDAY_SUBJECT_TEMPLATE_NAME = "birthdaySubject.txt";
+    public static final String BIRTHDAY_CONTENT_TEMPLATE_NAME = "birthdayContent.html";
     public static final String PARAMETER_RECIPIENT_FULL_NAME = "recipientFullName";
     private final EmailContentGenerator emailContentGenerator;
 
@@ -22,6 +23,9 @@ public class BirthdayEmailGenerator {
         Map<String, Object> model = Map.of(
                 PARAMETER_RECIPIENT_FULL_NAME, recipient.getRecipientFullName());
 
-        return emailContentGenerator.generateFromTemplate(BIRTHDAY_TEMPLATE_NAME, model);
+        return emailContentGenerator.generateFromTemplate(
+                BIRTHDAY_SUBJECT_TEMPLATE_NAME,
+                BIRTHDAY_CONTENT_TEMPLATE_NAME,
+                model);
     }
 }

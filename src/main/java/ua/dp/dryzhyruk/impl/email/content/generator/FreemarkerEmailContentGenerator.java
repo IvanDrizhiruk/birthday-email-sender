@@ -27,16 +27,21 @@ public class FreemarkerEmailContentGenerator implements EmailContentGenerator {
 
     @SneakyThrows
     @Override
-    public EmailContent generateFromTemplate(String templateName, Map<String, Object> model) {
+    public EmailContent generateFromTemplate(
+            String templateSubjectName,
+            String templateContentName,
+            Map<String, Object> model) {
 
-        Template template = freemarkerTemplateResourcesLoader.getTemplate(templateName);
+        Template subjectTemplate = freemarkerTemplateResourcesLoader.getTemplate(templateSubjectName);
+        String subject = FreeMarkerTemplateUtils.processTemplateIntoString(subjectTemplate, model);
+
+        Template contentTemplate = freemarkerTemplateResourcesLoader.getTemplate(templateContentName);
+        String htmlContent = FreeMarkerTemplateUtils.processTemplateIntoString(contentTemplate, model);
 
         List<String> imagesPaths = freemarkerTemplateResourcesLoader.getFilePathsFromDir(IMAGES_FOLDER_NAME);
 
-        String htmlContent = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
-
         return EmailContent.builder()
-                .subject("This is the Mega Subject!!!") //TODO use subject from template
+                .subject(subject)
                 .htmlContent(htmlContent)
                 .imagesAbsolutePaths(imagesPaths)
                 .build();

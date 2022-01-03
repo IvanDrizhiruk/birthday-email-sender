@@ -6,5 +6,8 @@ import java.util.Map;
 
 public interface EmailContentGenerator {
 
-    EmailContent generateFromTemplate(String templateName, Map<String, Object> model);
+    EmailContent generateFromTemplate(
+            String templateSubjectName,
+            String templateContentName,
+            Map<String, Object> model);
 }
