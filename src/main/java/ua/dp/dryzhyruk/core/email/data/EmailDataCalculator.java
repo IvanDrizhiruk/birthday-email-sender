@@ -11,7 +11,9 @@ import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,10 +33,10 @@ public class EmailDataCalculator {
         this.clock = clock;
     }
 
-    public List<EmailData> prepareEmails(List<Recipient> personsInformation) {
+    public List<EmailData> prepareEmails(List<Recipient> recipients) {
         LocalDate now = LocalDate.now(clock);
 
-        return personsInformation.stream()
+        return recipients.stream()
                 .filter(recipient -> testModeController.isTestMode()
                         ? testModeController.isRecipientInTestMode(recipient.getRecipientEmail())
                         : isCurrentAndNotWeekendsBirthday(now, recipient))
@@ -43,6 +45,34 @@ public class EmailDataCalculator {
                         .emailContent(birthdayEmailGenerator.generate(recipient))
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    public List<EmailData> prepareEmails2(List<Recipient> recipients) {
+        LocalDate now = LocalDate.now(clock);
+        int nDaysBeforeMonthEnd = now.lengthOfMonth() - now.getDayOfMonth();
+        boolean isLastDayOfMonth = now.lengthOfMonth() == now.getDayOfMonth();
+
+        if ((nDaysBeforeMonthEnd <= 2 && now.getDayOfWeek() == DayOfWeek.FRIDAY)
+                || isLastDayOfMonth) {
+
+
+            Month nextMonth = now.with(TemporalAdjusters.firstDayOfNextMonth())
+                    .getMonth();
+
+            List<Recipient> recipientWithBirthdayInNextMonth = recipients.stream()
+                    .filter(recipient -> recipient.getDateOfBirth().getMonth() == nextMonth)
+                    .collect(Collectors.toList());
+
+            Map<String, List<Recipient>> recipientByManagers = recipientWithBirthdayInNextMonth.stream()
+                    .collect(Collectors.groupingBy(Recipient::getManagerEmail));
+
+            //findByName
+            // prepare list for manager of manager
+
+            return List.of();
+        } else {
+            return List.of();
+        }
     }
 
     private boolean isCurrentAndNotWeekendsBirthday(LocalDate now, Recipient recipient) {
