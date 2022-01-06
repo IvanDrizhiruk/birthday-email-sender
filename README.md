@@ -17,3 +17,5 @@ TODO
 - java 11
 - mailutils for ubuntu (and configured postfix)
 
+Useful commands:
+- sudo tail -f /var/log/mail.log

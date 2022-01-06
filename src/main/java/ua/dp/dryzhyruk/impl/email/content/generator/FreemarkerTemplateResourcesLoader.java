@@ -22,7 +22,7 @@ public class FreemarkerTemplateResourcesLoader {
     private final ResourceLoader resourceLoader;
 
     public FreemarkerTemplateResourcesLoader(
-            @Value("${email.templates.dir}") String emailTemplatesDir,
+            @Value("${birthday.email.templates.dir}") String emailTemplatesDir,
             ResourceLoader resourceLoader) {
         this.emailTemplatesDir = emailTemplatesDir;
         this.resourceLoader = resourceLoader;

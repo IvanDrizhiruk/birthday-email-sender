@@ -14,7 +14,7 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
 
-class EmailDataCalculatorTest {
+class BirthdayEmailDataCalculatorTest {
 
     @Test
     void persons_for_current_day_should_be_selected_for_birthday_emails() {
@@ -74,7 +74,7 @@ class EmailDataCalculatorTest {
         );
 
         //when
-        List<EmailData> actual = new EmailDataCalculator(birthdayEmailGenerator, testModeController, nowClock)
+        List<EmailData> actual = new BirthdayEmailDataCalculator(birthdayEmailGenerator, testModeController, nowClock)
                 .prepareEmails(personsInformation);
 
         //then
@@ -131,7 +131,7 @@ class EmailDataCalculatorTest {
         );
 
         //when
-        List<EmailData> actual = new EmailDataCalculator(birthdayEmailGenerator, testModeController, nowClock)
+        List<EmailData> actual = new BirthdayEmailDataCalculator(birthdayEmailGenerator, testModeController, nowClock)
                 .prepareEmails(personsInformation);
 
         //then
@@ -178,7 +178,7 @@ class EmailDataCalculatorTest {
 
 
         //when
-        List<EmailData> actual = new EmailDataCalculator(birthdayEmailGenerator, testModeController, nowClock)
+        List<EmailData> actual = new BirthdayEmailDataCalculator(birthdayEmailGenerator, testModeController, nowClock)
                 .prepareEmails(personsInformation);
 
         //then
@@ -225,7 +225,7 @@ class EmailDataCalculatorTest {
 
 
         //when
-        List<EmailData> actual = new EmailDataCalculator(birthdayEmailGenerator, testModeController, nowClock)
+        List<EmailData> actual = new BirthdayEmailDataCalculator(birthdayEmailGenerator, testModeController, nowClock)
                 .prepareEmails(personsInformation);
 
         //then
@@ -287,7 +287,7 @@ class EmailDataCalculatorTest {
         );
 
         //when
-        List<EmailData> actual = new EmailDataCalculator(birthdayEmailGenerator, testModeController, nowClock)
+        List<EmailData> actual = new BirthdayEmailDataCalculator(birthdayEmailGenerator, testModeController, nowClock)
                 .prepareEmails(personsInformation);
 
         //then
@@ -326,7 +326,7 @@ class EmailDataCalculatorTest {
                         .build());
 
         //when
-        List<EmailData> actual = new EmailDataCalculator(birthdayEmailGenerator, testModeController, nowClock)
+        List<EmailData> actual = new BirthdayEmailDataCalculator(birthdayEmailGenerator, testModeController, nowClock)
                 .prepareEmails(personsInformation);
 
         //then
@@ -364,7 +364,7 @@ class EmailDataCalculatorTest {
                         .build());
 
         //when
-        List<EmailData> actual = new EmailDataCalculator(birthdayEmailGenerator, testModeController, nowClock)
+        List<EmailData> actual = new BirthdayEmailDataCalculator(birthdayEmailGenerator, testModeController, nowClock)
                 .prepareEmails(personsInformation);
 
         //then
@@ -396,7 +396,7 @@ class EmailDataCalculatorTest {
         List<Recipient> personsInformation = List.of(recipient);
 
         //when
-        List<EmailData> actual = new EmailDataCalculator(birthdayEmailGenerator, testModeController, nowClock)
+        List<EmailData> actual = new BirthdayEmailDataCalculator(birthdayEmailGenerator, testModeController, nowClock)
                 .prepareEmails(personsInformation);
 
         //then
@@ -434,7 +434,7 @@ class EmailDataCalculatorTest {
                         .build());
 
         //when
-        List<EmailData> actual = new EmailDataCalculator(birthdayEmailGenerator, testModeController, nowClock)
+        List<EmailData> actual = new BirthdayEmailDataCalculator(birthdayEmailGenerator, testModeController, nowClock)
                 .prepareEmails(personsInformation);
 
         //then
