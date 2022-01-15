@@ -77,6 +77,9 @@ public class EmailSenderImpl implements EmailSender {
         MimeMessageHelper message = new MimeMessageHelper(mimeMessage, true, StandardCharsets.UTF_8.name());
         message.setFrom(noReplyEmailAddress);
         message.setTo(emailData.getTo());
+        if (emailData.getCc() != null) {
+            message.setCc(emailData.getCc());
+        }
         message.setSubject(emailData.getEmailContent().getSubject());
         message.setText(emailData.getEmailContent().getHtmlContent(), true);
 

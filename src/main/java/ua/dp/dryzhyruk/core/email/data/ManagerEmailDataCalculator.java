@@ -2,7 +2,6 @@ package ua.dp.dryzhyruk.core.email.data;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ua.dp.dryzhyruk.core.email.content.generator.BirthdayEmailGenerator;
 import ua.dp.dryzhyruk.core.email.content.generator.ManagerEmailGenerator;
 import ua.dp.dryzhyruk.core.test.mode.TestModeController;
 import ua.dp.dryzhyruk.ports.email.data.EmailData;

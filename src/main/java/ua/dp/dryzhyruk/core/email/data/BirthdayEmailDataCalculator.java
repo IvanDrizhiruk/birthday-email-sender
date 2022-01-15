@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.dp.dryzhyruk.core.email.content.generator.BirthdayEmailGenerator;
 import ua.dp.dryzhyruk.core.test.mode.TestModeController;
+import ua.dp.dryzhyruk.ports.email.data.EmailContent;
 import ua.dp.dryzhyruk.ports.email.data.EmailData;
 import ua.dp.dryzhyruk.ports.recipient.loader.Recipient;
 
@@ -38,10 +39,19 @@ public class BirthdayEmailDataCalculator {
                 .filter(recipient -> testModeController.isTestMode()
                         ? testModeController.isRecipientInTestMode(recipient.getRecipientEmail())
                         : isCurrentAndNotWeekendsBirthday(now, recipient))
-                .map(recipient -> EmailData.builder()
-                        .to(recipient.getRecipientEmail())
-                        .emailContent(birthdayEmailGenerator.generate(recipient))
-                        .build())
+                .map(recipient -> {
+                    EmailContent emailContent = birthdayEmailGenerator.generate(recipient);
+
+                    String cc = testModeController.isTestMode()
+                            ? null
+                            : emailContent.getAdditionalParameters().get("email.cc");
+
+                    return EmailData.builder()
+                            .to(recipient.getRecipientEmail())
+                            .cc(cc)
+                            .emailContent(emailContent)
+                            .build();
+                })
                 .collect(Collectors.toList());
     }
 

@@ -7,5 +7,6 @@ import lombok.Value;
 @Builder
 public class EmailData {
     String to;
+    String cc;
     EmailContent emailContent;
 }

@@ -11,6 +11,7 @@ import ua.dp.dryzhyruk.ports.email.data.EmailContent;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -40,10 +41,17 @@ public class FreemarkerEmailContentGenerator implements EmailContentGenerator {
 
         List<String> imagesPaths = freemarkerTemplateResourcesLoader.getFilePathsFromDir(IMAGES_FOLDER_NAME);
 
+        Map<String, String> additionalParameters = freemarkerTemplateResourcesLoader.getAdditionalParameters()
+                .entrySet().stream()
+                .collect(Collectors.toMap(
+                        entry -> entry.getKey().toString(),
+                        entry -> entry.getValue().toString()));
+
         return EmailContent.builder()
                 .subject(subject)
                 .htmlContent(htmlContent)
                 .imagesAbsolutePaths(imagesPaths)
+                .additionalParameters(additionalParameters)
                 .build();
     }
 }

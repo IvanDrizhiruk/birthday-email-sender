@@ -9,24 +9,26 @@ import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.SpringTemplateLoader;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.List;
 import java.util.Objects;
+import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
 public class FreemarkerTemplateResourcesLoader {
 
-    private final String emailTemplatesDir;
+    private final String templatesDir;
     private final Configuration freemarkerConfiguration;
     private final ResourceLoader resourceLoader;
 
     public FreemarkerTemplateResourcesLoader(
-            @Value("${birthday.email.templates.dir}") String emailTemplatesDir,
+            @Value("${birthday.email.templates.dir}") String templatesDir,
             ResourceLoader resourceLoader) {
-        this.emailTemplatesDir = emailTemplatesDir;
+        this.templatesDir = templatesDir;
         this.resourceLoader = resourceLoader;
-        this.freemarkerConfiguration = newConfiguration(emailTemplatesDir, resourceLoader);
+        this.freemarkerConfiguration = newConfiguration(templatesDir, resourceLoader);
     }
 
     private Configuration newConfiguration(String emailTemplatesDir, ResourceLoader resourceLoader) {
@@ -43,7 +45,7 @@ public class FreemarkerTemplateResourcesLoader {
 
     @SneakyThrows
     public List<String> getFilePathsFromDir(String relativePath) {
-        File directoryWithImages = resourceLoader.getResource(new File(emailTemplatesDir, relativePath).getPath())
+        File directoryWithImages = resourceLoader.getResource(new File(templatesDir, relativePath).getPath())
                 .getFile();
 
         if (!directoryWithImages.isDirectory()) {
@@ -54,5 +56,17 @@ public class FreemarkerTemplateResourcesLoader {
                 .map(File::getAbsolutePath)
                 .sorted()
                 .collect(Collectors.toList());
+    }
+
+    @SneakyThrows
+    public Properties getAdditionalParameters() {
+        Properties properties = new Properties();
+
+        File fileWithAdditinalParameters = new File(templatesDir, "additional.properties");
+        try (FileInputStream propsFileStream = new FileInputStream(fileWithAdditinalParameters)) {
+            properties.load(propsFileStream);
+        }
+
+        return properties;
     }
 }
