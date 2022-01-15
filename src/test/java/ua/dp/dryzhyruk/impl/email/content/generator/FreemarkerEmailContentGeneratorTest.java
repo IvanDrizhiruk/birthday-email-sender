@@ -47,6 +47,7 @@ class FreemarkerEmailContentGeneratorTest {
                                 new File("src/test/resources/template-for-test/images/file2.gif").getAbsolutePath(),
                                 new File("src/test/resources/template-for-test/images/file3.jpeg").getAbsolutePath())
                         .collect(Collectors.toList()))
+                .additionalParameters(Map.of("email.cc", "cc_forex@dxc.com"))
                 .build();
 
         //when

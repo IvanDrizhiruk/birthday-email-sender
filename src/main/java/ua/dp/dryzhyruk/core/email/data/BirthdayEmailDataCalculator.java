@@ -42,7 +42,7 @@ public class BirthdayEmailDataCalculator {
                 .map(recipient -> {
                     EmailContent emailContent = birthdayEmailGenerator.generate(recipient);
 
-                    String cc = testModeController.isTestMode()
+                    String cc = testModeController.isTestMode() || emailContent.getAdditionalParameters() == null
                             ? null
                             : emailContent.getAdditionalParameters().get("email.cc");
 

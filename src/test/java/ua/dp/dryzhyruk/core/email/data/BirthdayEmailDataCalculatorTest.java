@@ -13,6 +13,7 @@ import ua.dp.dryzhyruk.ports.recipient.loader.Recipient;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 class BirthdayEmailDataCalculatorTest {
 
@@ -432,6 +433,93 @@ class BirthdayEmailDataCalculatorTest {
                         .to("mihail.fake@gmail.com")
                         .emailContent(emailContent.toBuilder().build())
                         .build());
+
+        //when
+        List<EmailData> actual = new BirthdayEmailDataCalculator(birthdayEmailGenerator, testModeController, nowClock)
+                .prepareEmails(personsInformation);
+
+        //then
+        Assertions.assertThat(actual)
+                .containsExactlyInAnyOrderElementsOf(expected);
+    }
+
+    @Test
+    void additional_properties_should_be_loaded_and_cc_should_be_set() {
+        //given
+        Clock nowClock = ClockUtils.fixedClock("2021-06-25T16:45:42.00Z"); //friday
+        BirthdayEmailGenerator birthdayEmailGenerator = Mockito.mock(BirthdayEmailGenerator.class);
+        TestModeController testModeController = new TestModeController(false, "ivan.drizhiruk@gmail.com");
+
+
+        Recipient recipient1 = Recipient.builder()
+                .dateOfBirth(LocalDate.of(1986, 6, 25))
+                .recipientFullName("Ivan Dryzhyruk")
+                .recipientEmail("ivan.drizhiruk@gmail.com")
+                .managerEmail("ivan.drizhiruk-manager@gmail.com")
+                .build();
+
+
+        EmailContent emailContent1 = EmailContent.builder()
+                .subject("This is the Mega Subject!!!")
+                .htmlContent("recipient 1")
+                .additionalParameters(Map.of("email.cc", "cc_forex@dxc.com"))
+                .build();
+
+
+        Mockito.when(birthdayEmailGenerator.generate(recipient1)).thenReturn(emailContent1);
+
+        List<Recipient> personsInformation = List.of(recipient1        );
+
+        List<EmailData> expected = List.of(
+                EmailData.builder()
+                        .to("ivan.drizhiruk@gmail.com")
+                        .cc("cc_forex@dxc.com")
+                        .emailContent(emailContent1.toBuilder().build())
+                        .build()
+        );
+
+        //when
+        List<EmailData> actual = new BirthdayEmailDataCalculator(birthdayEmailGenerator, testModeController, nowClock)
+                .prepareEmails(personsInformation);
+
+        //then
+        Assertions.assertThat(actual)
+                .containsExactlyInAnyOrderElementsOf(expected);
+    }
+
+    @Test
+    void cc_should_not_be_set_in_test_mode() {
+        //given
+        Clock nowClock = ClockUtils.fixedClock("2021-06-25T16:45:42.00Z"); //friday
+        BirthdayEmailGenerator birthdayEmailGenerator = Mockito.mock(BirthdayEmailGenerator.class);
+        TestModeController testModeController = new TestModeController(true, "ivan.drizhiruk@gmail.com");
+
+
+        Recipient recipient1 = Recipient.builder()
+                .dateOfBirth(LocalDate.of(1986, 6, 25))
+                .recipientFullName("Ivan Dryzhyruk")
+                .recipientEmail("ivan.drizhiruk@gmail.com")
+                .managerEmail("ivan.drizhiruk-manager@gmail.com")
+                .build();
+
+
+        EmailContent emailContent1 = EmailContent.builder()
+                .subject("This is the Mega Subject!!!")
+                .htmlContent("recipient 1")
+                .additionalParameters(Map.of("email.cc", "cc_forex@dxc.com"))
+                .build();
+
+
+        Mockito.when(birthdayEmailGenerator.generate(recipient1)).thenReturn(emailContent1);
+
+        List<Recipient> personsInformation = List.of(recipient1        );
+
+        List<EmailData> expected = List.of(
+                EmailData.builder()
+                        .to("ivan.drizhiruk@gmail.com")
+                        .emailContent(emailContent1.toBuilder().build())
+                        .build()
+        );
 
         //when
         List<EmailData> actual = new BirthdayEmailDataCalculator(birthdayEmailGenerator, testModeController, nowClock)
