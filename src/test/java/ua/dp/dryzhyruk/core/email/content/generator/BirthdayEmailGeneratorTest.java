@@ -34,7 +34,8 @@ class BirthdayEmailGeneratorTest {
                 .thenReturn(emailContent);
 
         Map<String, Object> expectedModel = Map.of(
-                "recipientFullName", "Ivan Dryzhyruk");
+                "recipientFullName", "Ivan Dryzhyruk",
+                "birthDayAndMonth", "25 June");
 
         EmailContent expected = emailContent.toBuilder().build();
 
