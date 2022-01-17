@@ -62,8 +62,9 @@ public class FreemarkerTemplateResourcesLoader {
     public Properties getAdditionalParameters() {
         Properties properties = new Properties();
 
-        File fileWithAdditinalParameters = new File(templatesDir, "additional.properties");
-        try (FileInputStream propsFileStream = new FileInputStream(fileWithAdditinalParameters)) {
+        File fileWithAdditionalParameters = resourceLoader.getResource(new File(templatesDir, "additional.properties").getPath())
+                .getFile();
+        try (FileInputStream propsFileStream = new FileInputStream(fileWithAdditionalParameters)) {
             properties.load(propsFileStream);
         }
 
