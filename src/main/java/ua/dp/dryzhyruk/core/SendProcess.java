@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.dp.dryzhyruk.core.email.data.BirthdayEmailDataCalculator;
 import ua.dp.dryzhyruk.core.email.data.ManagerEmailDataCalculator;
-import ua.dp.dryzhyruk.core.email.data.PingEmailDataCalculator;
+import ua.dp.dryzhyruk.core.email.data.ReportEmailDataCalculator;
+import ua.dp.dryzhyruk.core.email.data.SentReport;
 import ua.dp.dryzhyruk.ports.email.data.EmailData;
 import ua.dp.dryzhyruk.ports.email.sender.EmailSender;
 import ua.dp.dryzhyruk.ports.recipient.loader.PersonInfoLoader;
@@ -15,6 +16,7 @@ import ua.dp.dryzhyruk.ports.recipient.loader.Recipient;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Slf4j
@@ -24,7 +26,7 @@ public class SendProcess {
     private final PersonInfoLoader personInfoLoader;
     private final BirthdayEmailDataCalculator emailRecipientCalculator;
     private final ManagerEmailDataCalculator managerEmailDataCalculator;
-    private final PingEmailDataCalculator pingEmailDataCalculator;
+    private final ReportEmailDataCalculator reportEmailDataCalculator;
     private final EmailSender emailSender;
 
     @Autowired
@@ -32,22 +34,24 @@ public class SendProcess {
             PersonInfoLoader personInfoLoader,
             BirthdayEmailDataCalculator emailRecipientCalculator,
             ManagerEmailDataCalculator managerEmailDataCalculator,
-            PingEmailDataCalculator pingEmailDataCalculator, EmailSender emailSender) {
+            ReportEmailDataCalculator reportEmailDataCalculator, EmailSender emailSender) {
         this.personInfoLoader = personInfoLoader;
         this.emailRecipientCalculator = emailRecipientCalculator;
         this.managerEmailDataCalculator = managerEmailDataCalculator;
-        this.pingEmailDataCalculator = pingEmailDataCalculator;
+        this.reportEmailDataCalculator = reportEmailDataCalculator;
         this.emailSender = emailSender;
     }
 
     @SneakyThrows
     public void execute() {
-        log.info("Sending process started {}", LocalDateTime.now());
+        LocalDateTime sendingProcessStarted = LocalDateTime.now();
+        log.info("Sending process started {}", sendingProcessStarted);
         List<Recipient> recipient = personInfoLoader.loadPersonInformation();
 
         log.info("Recipient loaded. Number of records: {}", recipient.size());
         List<EmailData> birthdayEmailsData = emailRecipientCalculator.prepareEmails(recipient);
         log.info("Birthday mails for send. Number of mails: {}", birthdayEmailsData.size());
+        //TODO support manager mails
 //        List<EmailData> managerEmailsData = managerEmailDataCalculator.prepareEmails(recipient);
 //        log.info("Managers mails for send. Number of mails: {}", managerEmailsData.size());
 
@@ -55,11 +59,19 @@ public class SendProcess {
                 .flatMap(Collection::stream)
                 .forEach(emailSender::sendEmail);
 
+        LocalDateTime sendingProcessFinished = LocalDateTime.now();
+        log.info("Sending process finished {}", sendingProcessFinished);
 
-        List<EmailData> pingEmails = pingEmailDataCalculator.prepareEmails();
-        pingEmails
+
+        SentReport sentReport = SentReport.builder()
+                .sendingProcessStarted(sendingProcessStarted)
+                .numberLoadedRecipients(recipient.size())
+                .birthdayMailsSentTo(birthdayEmailsData.stream().map(EmailData::getTo).collect(Collectors.toList()))
+                .sendingProcessFinished(sendingProcessFinished)
+                .build();
+        List<EmailData> reportEmails = reportEmailDataCalculator.prepareEmails(sentReport);
+        reportEmails
                 .forEach(emailSender::sendEmail);
-
-        log.info("Sending process finished {}", LocalDateTime.now());
+        log.info("Report mail sent");
     }
 }
