@@ -3,7 +3,6 @@ package ua.dp.dryzhyruk.impl.recipient.loader;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.supercsv.cellprocessor.constraint.NotNull;
@@ -15,6 +14,7 @@ import ua.dp.dryzhyruk.ports.recipient.loader.LoadRecipientsException;
 import ua.dp.dryzhyruk.ports.recipient.loader.PersonInfoLoader;
 import ua.dp.dryzhyruk.ports.recipient.loader.Recipient;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -55,8 +55,20 @@ public class PersonInfoLoaderImpl implements PersonInfoLoader {
     }
 
     private CsvBeanReader prepareCsvBeanReader(String recipientsFilePath) throws IOException {
-        Resource resource = resourceLoader.getResource(recipientsFilePath);
-        return new CsvBeanReader(new FileReader(resource.getFile()), CsvPreference.STANDARD_PREFERENCE);
+        String absoluteRecipientsFilePath = toAbsolutePath(recipientsFilePath);
+        return new CsvBeanReader(new FileReader(absoluteRecipientsFilePath), CsvPreference.STANDARD_PREFERENCE);
+    }
+
+    private String toAbsolutePath(String recipientsFilePath) {
+        try {
+            return resourceLoader
+                    .getResource(recipientsFilePath)
+                    .getFile()
+                    .getAbsolutePath();
+        } catch (Exception e) {
+            return new File(recipientsFilePath)
+                    .getAbsolutePath();
+        }
     }
 
     private Recipient toRecipient(RecipientCsvEntity csvRecipientEntity) {

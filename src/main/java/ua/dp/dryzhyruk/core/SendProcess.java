@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua.dp.dryzhyruk.core.email.data.BirthdayEmailDataCalculator;
 import ua.dp.dryzhyruk.core.email.data.ManagerEmailDataCalculator;
+import ua.dp.dryzhyruk.core.email.data.PingEmailDataCalculator;
 import ua.dp.dryzhyruk.ports.email.data.EmailData;
 import ua.dp.dryzhyruk.ports.email.sender.EmailSender;
 import ua.dp.dryzhyruk.ports.recipient.loader.PersonInfoLoader;
@@ -23,16 +24,19 @@ public class SendProcess {
     private final PersonInfoLoader personInfoLoader;
     private final BirthdayEmailDataCalculator emailRecipientCalculator;
     private final ManagerEmailDataCalculator managerEmailDataCalculator;
+    private final PingEmailDataCalculator pingEmailDataCalculator;
     private final EmailSender emailSender;
 
     @Autowired
     public SendProcess(
             PersonInfoLoader personInfoLoader,
             BirthdayEmailDataCalculator emailRecipientCalculator,
-            ManagerEmailDataCalculator managerEmailDataCalculator, EmailSender emailSender) {
+            ManagerEmailDataCalculator managerEmailDataCalculator,
+            PingEmailDataCalculator pingEmailDataCalculator, EmailSender emailSender) {
         this.personInfoLoader = personInfoLoader;
         this.emailRecipientCalculator = emailRecipientCalculator;
         this.managerEmailDataCalculator = managerEmailDataCalculator;
+        this.pingEmailDataCalculator = pingEmailDataCalculator;
         this.emailSender = emailSender;
     }
 
@@ -44,11 +48,16 @@ public class SendProcess {
         log.info("Recipient loaded. Number of records: {}", recipient.size());
         List<EmailData> birthdayEmailsData = emailRecipientCalculator.prepareEmails(recipient);
         log.info("Birthday mails for send. Number of mails: {}", birthdayEmailsData.size());
-        List<EmailData> managerEmailsData = managerEmailDataCalculator.prepareEmails(recipient);
-        log.info("Managers mails for send. Number of mails: {}", managerEmailsData.size());
+//        List<EmailData> managerEmailsData = managerEmailDataCalculator.prepareEmails(recipient);
+//        log.info("Managers mails for send. Number of mails: {}", managerEmailsData.size());
 
-        Stream.of(birthdayEmailsData, managerEmailsData)
+        Stream.of(birthdayEmailsData/*, managerEmailsData*/)
                 .flatMap(Collection::stream)
+                .forEach(emailSender::sendEmail);
+
+
+        List<EmailData> pingEmails = pingEmailDataCalculator.prepareEmails();
+        pingEmails
                 .forEach(emailSender::sendEmail);
 
         log.info("Sending process finished {}", LocalDateTime.now());

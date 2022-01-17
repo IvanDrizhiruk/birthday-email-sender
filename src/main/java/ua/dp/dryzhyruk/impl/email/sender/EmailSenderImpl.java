@@ -83,9 +83,11 @@ public class EmailSenderImpl implements EmailSender {
         message.setSubject(emailData.getEmailContent().getSubject());
         message.setText(emailData.getEmailContent().getHtmlContent(), true);
 
-        emailData.getEmailContent().getImagesAbsolutePaths()
-                .forEach(
-                        imageAbsolutePath -> inlineImage(message, imageAbsolutePath));
+        if (emailData.getEmailContent().getImagesAbsolutePaths() != null) {
+            emailData.getEmailContent().getImagesAbsolutePaths()
+                    .forEach(
+                            imageAbsolutePath -> inlineImage(message, imageAbsolutePath));
+        }
 
         return mimeMessage;
     }
