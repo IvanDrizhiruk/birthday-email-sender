@@ -64,7 +64,7 @@ public class PersonInfoLoaderImpl implements PersonInfoLoader {
             return resourceLoader
                     .getResource(recipientsFilePath)
                     .getFile()
-                    .getAbsolutePath();
+                    .getPath();
         } catch (Exception e) {
             return new File(recipientsFilePath)
                     .getAbsolutePath();

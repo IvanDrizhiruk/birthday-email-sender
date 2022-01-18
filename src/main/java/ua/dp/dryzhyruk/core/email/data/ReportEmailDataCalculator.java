@@ -14,14 +14,14 @@ import java.util.List;
 public class ReportEmailDataCalculator {
 
     private final Clock clock;
-    private final String pingRecipientEmailAddress;
+    private final String reportRecipientEmailAddress;
 
     @Autowired
     public ReportEmailDataCalculator(
             Clock clock,
-            @Value("${ping.recipient.email.address}") String pingRecipientEmailAddress) {
+            @Value("${report.recipient.email.address}") String reportRecipientEmailAddress) {
         this.clock = clock;
-        this.pingRecipientEmailAddress = pingRecipientEmailAddress;
+        this.reportRecipientEmailAddress = reportRecipientEmailAddress;
     }
 
     public List<EmailData> prepareEmails(SentReport sentReport) {
@@ -34,7 +34,7 @@ public class ReportEmailDataCalculator {
                 .build();
 
         EmailData emailData = EmailData.builder()
-                .to(pingRecipientEmailAddress)
+                .to(reportRecipientEmailAddress)
                 .emailContent(emailContent)
                 .build();
 

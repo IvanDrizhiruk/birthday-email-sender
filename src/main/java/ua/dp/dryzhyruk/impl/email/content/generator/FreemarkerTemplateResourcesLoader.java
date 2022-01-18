@@ -45,8 +45,7 @@ public class FreemarkerTemplateResourcesLoader {
 
     @SneakyThrows
     public List<String> getFilePathsFromDir(String relativePath) {
-        File directoryWithImages = resourceLoader.getResource(new File(templatesDir, relativePath).getPath())
-                .getFile();
+        File directoryWithImages = toAbsolutePath(new File(templatesDir, relativePath).getPath());
 
         if (!directoryWithImages.isDirectory()) {
             throw new IllegalArgumentException("Path is not directory " + directoryWithImages.getPath());
@@ -62,12 +61,30 @@ public class FreemarkerTemplateResourcesLoader {
     public Properties getAdditionalParameters() {
         Properties properties = new Properties();
 
-        File fileWithAdditionalParameters = resourceLoader.getResource(new File(templatesDir, "additional.properties").getPath())
-                .getFile();
+        File fileWithAdditionalParameters = toAbsolutePath(new File(templatesDir, "additional.properties").getPath());
         try (FileInputStream propsFileStream = new FileInputStream(fileWithAdditionalParameters)) {
             properties.load(propsFileStream);
         }
 
         return properties;
+    }
+
+    //TODO rework
+    private File toAbsolutePath(String recipientsFilePath) {
+        try {
+            File absoluteFile = resourceLoader
+                    .getResource(recipientsFilePath)
+                    .getFile()
+                    .getAbsoluteFile();
+            if (absoluteFile.exists()) {
+                return absoluteFile;
+            }
+            return new File(recipientsFilePath)
+                    .getAbsoluteFile();
+
+        } catch (Exception e) {
+            return new File(recipientsFilePath)
+                    .getAbsoluteFile();
+        }
     }
 }
