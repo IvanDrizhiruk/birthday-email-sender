@@ -59,6 +59,7 @@ public class ManagerEmailDataCalculator {
             Map<String, Recipient> recipientByMail = recipients.stream()
                     .collect(Collectors.toMap(Recipient::getRecipientEmail, Function.identity()));
 
+            //TODO exclude letter to me about me
             return recipientByManagers.entrySet().stream()
                     .map(mangerAndRecipientsWithBirthday -> EmailData.builder()
                         .to(mangerAndRecipientsWithBirthday.getKey())

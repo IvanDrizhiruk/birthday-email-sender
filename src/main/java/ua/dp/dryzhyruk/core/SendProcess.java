@@ -8,8 +8,10 @@ import ua.dp.dryzhyruk.core.email.data.BirthdayEmailDataCalculator;
 import ua.dp.dryzhyruk.core.email.data.ManagerEmailDataCalculator;
 import ua.dp.dryzhyruk.core.email.data.ReportEmailDataCalculator;
 import ua.dp.dryzhyruk.core.email.data.SentReport;
+import ua.dp.dryzhyruk.ports.email.backup.EmailStorage;
 import ua.dp.dryzhyruk.ports.email.data.EmailData;
 import ua.dp.dryzhyruk.ports.email.sender.EmailSender;
+import ua.dp.dryzhyruk.ports.email.sender.SendMailException;
 import ua.dp.dryzhyruk.ports.recipient.loader.PersonInfoLoader;
 import ua.dp.dryzhyruk.ports.recipient.loader.Recipient;
 
@@ -28,18 +30,20 @@ public class SendProcess {
     private final ManagerEmailDataCalculator managerEmailDataCalculator;
     private final ReportEmailDataCalculator reportEmailDataCalculator;
     private final EmailSender emailSender;
+    private final EmailStorage emailStorage;
 
     @Autowired
     public SendProcess(
             PersonInfoLoader personInfoLoader,
             BirthdayEmailDataCalculator emailRecipientCalculator,
             ManagerEmailDataCalculator managerEmailDataCalculator,
-            ReportEmailDataCalculator reportEmailDataCalculator, EmailSender emailSender) {
+            ReportEmailDataCalculator reportEmailDataCalculator, EmailSender emailSender, EmailStorage emailStorage) {
         this.personInfoLoader = personInfoLoader;
         this.emailRecipientCalculator = emailRecipientCalculator;
         this.managerEmailDataCalculator = managerEmailDataCalculator;
         this.reportEmailDataCalculator = reportEmailDataCalculator;
         this.emailSender = emailSender;
+        this.emailStorage = emailStorage;
     }
 
     @SneakyThrows
@@ -57,21 +61,31 @@ public class SendProcess {
 
         Stream.of(birthdayEmailsData/*, managerEmailsData*/)
                 .flatMap(Collection::stream)
-                .forEach(emailSender::sendEmail);
+                .forEach(this::sendEmailOrSaveOnError);
 
         LocalDateTime sendingProcessFinished = LocalDateTime.now();
         log.info("Sending process finished {}", sendingProcessFinished);
 
-
         SentReport sentReport = SentReport.builder()
                 .sendingProcessStarted(sendingProcessStarted)
                 .numberLoadedRecipients(recipient.size())
-                .birthdayMailsSentTo(birthdayEmailsData.stream().map(EmailData::getTo).collect(Collectors.toList()))
+                .birthdayMailsSentTo(birthdayEmailsData.stream()
+                        .map(EmailData::getTo)
+                        .collect(Collectors.toList()))
                 .sendingProcessFinished(sendingProcessFinished)
                 .build();
         List<EmailData> reportEmails = reportEmailDataCalculator.prepareEmails(sentReport);
         reportEmails
                 .forEach(emailSender::sendEmail);
         log.info("Report mail sent");
+    }
+
+    private void sendEmailOrSaveOnError(EmailData emailData) {
+        try {
+            emailSender.sendEmail(emailData);
+        } catch (SendMailException e) {
+            log.error("Unable send message to " + emailData.getTo(), e);
+            emailStorage.store(emailData);
+        }
     }
 }

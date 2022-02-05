@@ -16,6 +16,7 @@
 	<properties>
 		<java.version>11</java.version>
 		<super-csv.version>2.4.0</super-csv.version>
+		<gson.version>2.6.2</gson.version>
 	</properties>
 
 	<dependencies>
@@ -47,12 +48,10 @@
 			<artifactId>super-csv</artifactId>
 			<version>${super-csv.version}</version>
 		</dependency>
-        <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>RELEASE</version>
-            <scope>compile</scope>
-        </dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+		</dependency>
     </dependencies>
 
 	<build>

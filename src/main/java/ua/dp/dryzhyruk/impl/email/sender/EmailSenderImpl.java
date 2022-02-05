@@ -7,6 +7,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import ua.dp.dryzhyruk.ports.email.data.EmailData;
 import ua.dp.dryzhyruk.ports.email.sender.EmailSender;
+import ua.dp.dryzhyruk.ports.email.sender.SendMailException;
 
 import javax.mail.*;
 import javax.mail.internet.MimeMessage;
@@ -68,7 +69,7 @@ public class EmailSenderImpl implements EmailSender {
 
             Transport.send(mimeMessage);
         } catch (MessagingException e) {
-            log.error("Error. Unable to process message", e);
+            throw new SendMailException(e);
         }
     }
 
