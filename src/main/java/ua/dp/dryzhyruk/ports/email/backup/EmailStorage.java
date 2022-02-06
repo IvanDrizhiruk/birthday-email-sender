@@ -8,7 +8,7 @@ public interface EmailStorage {
 
     void store(EmailData emailData);
 
-    List<EmailData> retrieve(EmailData emailData);
+    List<EmailData> retrieve();
 
     void cleanupStorage(EmailData emailData);
 }

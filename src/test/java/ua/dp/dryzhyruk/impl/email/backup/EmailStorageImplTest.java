@@ -11,6 +11,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 class EmailStorageImplTest {
 
     @Test
@@ -33,7 +35,7 @@ class EmailStorageImplTest {
         //when
         EmailStorageImpl emailStorage = new EmailStorageImpl("target/email-directory-1");
         emailStorage.store(emailData);
-        List<EmailData> actual = emailStorage.retrieve(emailData);
+        List<EmailData> actual = emailStorage.retrieve();
         //then
         Assertions.assertThat(actual)
                 .containsExactly(expected);
@@ -43,8 +45,8 @@ class EmailStorageImplTest {
     void email_should_be_stored_in_file_and_retrieve_if_file_exist() throws IOException {
         //given
         String emailBackupPath = "target/email-directory-2";
-
-        Files.writeString(Path.of(emailBackupPath, "ivan.drizhiruk@gmail.com.json"), "Some text");
+        Files.createDirectories(Path.of(emailBackupPath));
+        Files.writeString(Path.of(emailBackupPath, "ivan.drizhiruk@gmail.com.json"), "Some text", UTF_8);
 
         EmailContent emailContent = EmailContent.builder()
                 .subject("This is the Mega Subject!!!")
@@ -64,7 +66,7 @@ class EmailStorageImplTest {
         //when
         EmailStorageImpl emailStorage = new EmailStorageImpl(emailBackupPath);
         emailStorage.store(emailData);
-        List<EmailData> actual = emailStorage.retrieve(emailData);
+        List<EmailData> actual = emailStorage.retrieve();
 
         //then
         Assertions.assertThat(actual)

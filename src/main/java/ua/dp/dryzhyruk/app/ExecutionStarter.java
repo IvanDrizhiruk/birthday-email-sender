@@ -33,7 +33,7 @@ public class ExecutionStarter {
     private void init() {
         if (testModeController.isTestMode()) {
             log.info("### Execution on start ###");
-            sendProcess.execute();
+            sendProcess.sendMessages();
 
             terminateProgram();
         }
@@ -48,9 +48,15 @@ public class ExecutionStarter {
     private void runRegulatory() {
         if (!testModeController.isTestMode()) {
             log.info("### Execution by scheduling ###");
-            sendProcess.execute();
+            sendProcess.sendMessages();
         }
     }
 
-    //TODO add method for rerun
+    @Scheduled(cron = "${email.backup.resending.cron}")
+    private void resendMailsFromBackup() {
+        if (!testModeController.isTestMode()) {
+            log.info("### Execution by scheduling ###");
+            sendProcess.resendMessagesFromBackup();
+        }
+    }
 }

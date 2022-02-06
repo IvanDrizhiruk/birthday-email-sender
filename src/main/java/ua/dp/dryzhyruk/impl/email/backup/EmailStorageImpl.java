@@ -56,7 +56,7 @@ public class EmailStorageImpl implements EmailStorage {
 
     @SneakyThrows
     @Override
-    public List<EmailData> retrieve(EmailData emailData) {
+    public List<EmailData> retrieve() {
         try (Stream<Path> list = Files.list(Paths.get(emailBackupPath))) {
             return list
                     .map(this::loadFile)

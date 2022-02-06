@@ -47,7 +47,7 @@ public class SendProcess {
     }
 
     @SneakyThrows
-    public void execute() {
+    public void sendMessages() {
         LocalDateTime sendingProcessStarted = LocalDateTime.now();
         log.info("Sending process started {}", sendingProcessStarted);
         List<Recipient> recipient = personInfoLoader.loadPersonInformation();
@@ -87,5 +87,20 @@ public class SendProcess {
             log.error("Unable send message to " + emailData.getTo(), e);
             emailStorage.store(emailData);
         }
+    }
+
+    public void resendMessagesFromBackup() {
+        emailStorage.retrieve().stream()
+                .map(emailData -> {
+                    try {
+                        emailSender.sendEmail(emailData);
+
+                        return emailData;
+                    } catch (SendMailException e) {
+                        log.error("Unable send message from backup to " + emailData.getTo(), e);
+                        return null;
+                    }
+                })
+                .forEach(emailStorage::cleanupStorage);
     }
 }
