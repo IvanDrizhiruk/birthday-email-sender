@@ -30,7 +30,7 @@ public class ReportEmailDataCalculator {
         //TODO rework with template
         EmailContent emailContent = EmailContent.builder()
                 .subject("Report birthday email send by " + now)
-                .htmlContent(" Email prepared: " + now + " " + sentReport)
+                .htmlContent("Email prepared: " + now + " " + sentReport)
                 .build();
 
         EmailData emailData = EmailData.builder()
